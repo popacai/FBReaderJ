@@ -26,6 +26,7 @@ import org.geometerplus.zlibrary.core.util.MimeType;
 import org.geometerplus.zlibrary.core.xml.ZLStringMap;
 
 import org.geometerplus.fbreader.network.INetworkLink;
+import org.geometerplus.fbreader.network.NetworkLinkCreator;
 import org.geometerplus.fbreader.network.atom.ATOMLink;
 import org.geometerplus.fbreader.network.authentication.NetworkAuthenticationManager;
 import org.geometerplus.fbreader.network.authentication.litres.LitResAuthenticationManager;
@@ -39,6 +40,8 @@ class OPDSLinkXMLReader extends OPDSXMLReader implements OPDSConstants {
 		private final LinkedList<URLRewritingRule> myUrlRewritingRules = new LinkedList<URLRewritingRule>();
 		private final HashMap<RelationAlias, String> myRelationAliases = new HashMap<RelationAlias, String>();
 		private final LinkedHashMap<String,String> myExtraData = new LinkedHashMap<String,String>();
+		private final NetworkLinkCreator linkCreator = new NetworkLinkCreator();
+		
 		List<INetworkLink> links() {
 			return myLinks;
 		}
@@ -97,6 +100,9 @@ class OPDSLinkXMLReader extends OPDSXMLReader implements OPDSConstants {
 					if (MimeType.APP_ATOM_XML.weakEquals(mime)) {
 						infos.addInfo(new UrlInfoWithDate(UrlInfo.Type.Catalog, href, mime));
 					}
+					if (MimeType.APP_RSS_XML.weakEquals(mime)) {
+						infos.addInfo(new UrlInfoWithDate(UrlInfo.Type.Catalog, href, mime));
+					}
 				} else if (rel == "search") {
 					if (MimeType.APP_ATOM_XML.weakEquals(mime) || MimeType.TEXT_HTML.weakEquals(mime)) {
 						final OpenSearchDescription descr = OpenSearchDescription.createDefault(href, mime);
@@ -137,29 +143,36 @@ class OPDSLinkXMLReader extends OPDSXMLReader implements OPDSConstants {
 			final String titleString = title.toString();
 			final String summaryString = summary != null ? summary.toString() : null;
 
-			OPDSNetworkLink opdsLink = new OPDSPredefinedNetworkLink(
-				OPDSNetworkLink.INVALID_ID,
-				id,
-				siteName,
-				titleString,
-				summaryString,
-				language,
-				infos
-			);
+			UrlInfoWithDate ud = infos.getInfo(UrlInfo.Type.Catalog);
 
-			opdsLink.setRelationAliases(myRelationAliases);
-			opdsLink.setUrlRewritingRules(myUrlRewritingRules);
-			opdsLink.setExtraData(myExtraData);
+			if (!MimeType.APP_RSS_XML.weakEquals(ud.Mime)) {
+				OPDSNetworkLink opdsLink = (OPDSNetworkLink)linkCreator.createOPDSLink(OPDSNetworkLink.INVALID_ID,
+						id,
+						siteName,
+						titleString,
+						summaryString,
+						language,
+						infos);
+				opdsLink.setRelationAliases(myRelationAliases);
+				opdsLink.setUrlRewritingRules(myUrlRewritingRules);
+				opdsLink.setExtraData(myExtraData);
 
-			if (myAuthenticationType == "litres") {
-				opdsLink.setAuthenticationManager(
-					NetworkAuthenticationManager.createManager(
-						opdsLink, LitResAuthenticationManager.class
-					)
-				);
+				if (myAuthenticationType == "litres") {
+					opdsLink.setAuthenticationManager(
+						NetworkAuthenticationManager.createManager(
+							opdsLink, LitResAuthenticationManager.class
+						)
+					);
+				}
+				return opdsLink;
+			}else{
+				return linkCreator.createRSSLink(OPDSNetworkLink.INVALID_ID,
+						siteName,
+						titleString,
+						summaryString,
+						language,
+						infos);
 			}
-
-			return opdsLink;
 		}
 
 		public boolean processFeedMetadata(OPDSFeedMetadata feed, boolean beforeEntries) {
