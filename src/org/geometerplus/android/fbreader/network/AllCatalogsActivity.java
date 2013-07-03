@@ -21,7 +21,7 @@ package org.geometerplus.android.fbreader.network;
 
 import java.util.*;
 
-import android.app.Activity;
+import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,9 +33,9 @@ import org.geometerplus.fbreader.network.*;
 import org.geometerplus.fbreader.network.tree.NetworkCatalogRootTree;
 import org.geometerplus.android.fbreader.covers.CoverManager;
 
+import com.commonsware.cwac.tlv.TouchListView;
 
-
-public class AllCatalogsActivity extends Activity {
+public class AllCatalogsActivity extends ListActivity {
 	final NetworkLibrary library = NetworkLibrary.Instance();
 	CheckListAdapter myAdapter;
 	ArrayList<String> ids = new ArrayList<String>();
@@ -84,11 +84,33 @@ public class AllCatalogsActivity extends Activity {
 			}
 		}
 		
-		ListView selectedList = (ListView) findViewById(R.id.selectedList);
+		//TouchListView selectedList = (TouchListView) findViewById(R.id.selectedList);
+                TouchListView selectedList = (TouchListView)getListView();
 		myAdapter = new CheckListAdapter(this, R.layout.checkbox_item, idItems, this);
 		selectedList.setAdapter(myAdapter);
-
+                selectedList.setDropListener(onDrop);
+                selectedList.setRemoveListener(onRemove);
 	}
+
+        private TouchListView.DropListener onDrop=new TouchListView.DropListener() {
+                @Override
+                public void drop(int from, int to) {
+                                CheckItem item = myAdapter.getItem(from);
+                 
+                                myAdapter.remove(item);
+                                myAdapter.insert(item, to);
+                                System.out.println("---> Drop");
+                }
+        };
+                
+        private TouchListView.RemoveListener onRemove=new TouchListView.RemoveListener() {
+                @Override
+                public void remove(int which) {
+                                myAdapter.remove(myAdapter.getItem(which));
+                                System.out.println("---> Remove");
+                }
+        };
+
 	
 	private String getLabelByKey(String keyName) {
 		return NetworkLibrary.resource().getResource("allCatalogs").getResource(keyName).getValue();
@@ -184,11 +206,11 @@ public class AllCatalogsActivity extends Activity {
 	}
 	
 	private class CheckListAdapter extends ArrayAdapter<CheckItem> {
-		Activity myActivity;
+		ListActivity myActivity;
 		private CoverManager myCoverManager;
 		private ArrayList<CheckItem> items = new ArrayList<CheckItem>();
 		
-		public CheckListAdapter(Context context, int textViewResourceId, List<CheckItem> objects, Activity activity) {
+		public CheckListAdapter(Context context, int textViewResourceId, List<CheckItem> objects, ListActivity activity) {
 			super(context, textViewResourceId, objects);
 			myActivity = activity;
 			items.addAll(objects);
@@ -206,7 +228,7 @@ public class AllCatalogsActivity extends Activity {
 			
 		    if (item != null) {
 		    	if(item.isSection()){
-		    		LayoutInflater vi;
+		    	        LayoutInflater vi;
 		    		vi = LayoutInflater.from(getContext());
 		    		v = vi.inflate(R.layout.checkbox_section, null);
 		    		TextView tt = (TextView) v.findViewById(R.id.title);
@@ -214,18 +236,18 @@ public class AllCatalogsActivity extends Activity {
 		    			tt.setText(item.getId());
 		    		}
 		    	}else{
-		    		
-		    		if (myCoverManager == null) {
-						v.measure(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-						final int coverHeight = v.getMeasuredHeight();
-						myCoverManager = new CoverManager(myActivity, coverHeight * 15 / 12, coverHeight);
-						v.requestLayout();
-					}
-		    		
-				    LayoutInflater vi;
-				    vi = LayoutInflater.from(getContext());
+				LayoutInflater vi;
+				vi = LayoutInflater.from(getContext());
 				    v = vi.inflate(R.layout.checkbox_item, null);
+
+                                    if (myCoverManager == null) {
+                                                v.measure(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                                                final int coverHeight = v.getMeasuredHeight();
+                                                myCoverManager = new CoverManager(myActivity, coverHeight * 15 / 12, coverHeight);
+                                                v.requestLayout();
+                                        }
 				    
+
 				    NetworkTree t = item.getTree();
 		    	
 		    		if(t != null){
