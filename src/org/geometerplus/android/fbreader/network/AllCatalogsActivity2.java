@@ -36,7 +36,7 @@ import org.geometerplus.android.fbreader.covers.CoverManager;
 import com.mobeta.android.dslv.DragSortListView;
 import com.mobeta.android.dslv.DragSortListView.RemoveListener;
 
-public class AllCatalogsActivity extends ListActivity {
+public class AllCatalogsActivity2 extends ListActivity {
 	final NetworkLibrary library = NetworkLibrary.Instance();
 	CheckListAdapter myAdapter;
 	ArrayList<String> ids = new ArrayList<String>();
