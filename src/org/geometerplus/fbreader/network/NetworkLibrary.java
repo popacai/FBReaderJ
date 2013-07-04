@@ -195,7 +195,7 @@ public class NetworkLibrary {
 	}
 	
 	public void setActiveIds(Collection<String> ids) {
-		final TreeSet<String> allCodes = new TreeSet<String>();
+		final List<String> allCodes = new ArrayList<String>();
 		
 		//add default catalog ids which are matched to link ids
 		boolean found = false;
@@ -213,7 +213,6 @@ public class NetworkLibrary {
 		}
 		allCodes.removeAll(linkIds());
 		allCodes.addAll(ids);
-
 		final ArrayList<String> codesList = new ArrayList<String>(allCodes.size());
 		for (String l : allCodes) {
 			codesList.add(l);
@@ -228,11 +227,19 @@ public class NetworkLibrary {
 		final LinkedList<INetworkLink> filteredList = new LinkedList<INetworkLink>();
 		final Collection<String> ids = activeIds();
 		synchronized (myLinks) {
-			for (INetworkLink link : myLinks) {
+			/*for (INetworkLink link : myLinks) {
 				if (ids.contains(link.getUrl(UrlInfo.Type.Catalog))) {
 					filteredList.add(link);
 				}
-			}
+			}*/
+                        for (String id : ids) {
+                             for (INetworkLink link : myLinks) {
+                                  if(id.equals(link.getUrl(UrlInfo.Type.Catalog))){
+                                      filteredList.add(link);
+                                      break;
+                                  }
+                             }
+                        }
 		}
 		return filteredList;
 	}
@@ -450,8 +457,8 @@ public class NetworkLibrary {
 	private void makeUpToDate() {
 		updateActiveIds();
 		
-		final SortedSet<INetworkLink> linkSet = new TreeSet<INetworkLink>(activeLinks());
-
+		//final TreeSet<INetworkLink> linkSet = new TreeSet<INetworkLink>(activeLinks());
+                final List<INetworkLink> linkSet = activeLinks();
 		final LinkedList<FBTree> toRemove = new LinkedList<FBTree>();
 		
 		// we do remove sum tree items:
@@ -459,16 +466,18 @@ public class NetworkLibrary {
 			if (t instanceof NetworkCatalogTree) {
 				final INetworkLink link = ((NetworkCatalogTree)t).getLink();
 				if (link != null) {
-					if (!linkSet.contains(link)) {
+
+                        //System.out.println(">>LINK: "+link.getTitle());
+					//if (!linkSet.contains(link)) {
                         // 1. links not listed in activeLinks list right now
 						toRemove.add(t);
-					} else if (link instanceof ICustomNetworkLink &&
-								((ICustomNetworkLink)link).hasChanges()) {
+					//} else if (link instanceof ICustomNetworkLink &&
+					//			((ICustomNetworkLink)link).hasChanges()) {
                         // 2. custom links that were changed
-						toRemove.add(t);
-					} else {
-						linkSet.remove(link);
-					}
+					//	toRemove.add(t);
+					//} else {
+					//	linkSet.remove(link);
+					//}
 				} else {
 					// 3. search item
 					toRemove.add(t);
@@ -478,21 +487,27 @@ public class NetworkLibrary {
 				toRemove.add(t);
 			}
 		}
-		for (FBTree tree : toRemove) {
+		//for (FBTree tree : toRemove) {
+		for (FBTree tree : myRootTree.subTrees()) {
 			tree.removeSelf();
 		}
 
 		// we do add new network catalog items
-		for (INetworkLink link : linkSet) {
+		//for (INetworkLink link : linkSet) {
+                  for (int i=linkSet.size()-1; i>=0; --i) {
+
+                        INetworkLink link = linkSet.get(i);
 			int index = 0;
-			for (FBTree t : myRootTree.subTrees()) {
-				final INetworkLink l = ((NetworkTree)t).getLink();
-				if (l != null && link.compareTo(l) <= 0) {
-					break;
-				}
-				
-				++index;
-			}
+			//for (FBTree t : myRootTree.subTrees()) {
+			//	final INetworkLink l = ((NetworkTree)t).getLink();
+			//	if (l != null && link.compareTo(l) <= 0) {
+			//		break;
+			//	}
+			//	
+			//	++index;
+			//}
+                        
+                        System.out.println("INSERTED: "+index+": "+link.getTitle());
 			new NetworkCatalogRootTree(myRootTree, link, index);
 		}
 		

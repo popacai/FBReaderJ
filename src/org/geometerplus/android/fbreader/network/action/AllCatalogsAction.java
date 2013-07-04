@@ -43,6 +43,9 @@ public class AllCatalogsAction extends RootAction {
 		final List<String> activeIds = library.activeIds();
 		ArrayList<String> ids = new ArrayList<String>();
 		ids.addAll(activeIds);
+		for(String id : ids){
+                    System.out.println("======= "+id);
+                }
 		
 		final ArrayList<String> inactiveIds = new ArrayList<String>();
 		boolean found = false;

@@ -66,13 +66,13 @@ public class AllCatalogsActivity extends ListActivity {
 		ArrayList<CheckItem> idItems = new ArrayList<CheckItem>();
 			idItems.add(new CheckSection(getLabelByKey("active")));
 
-			final TreeSet<CheckItem> items = new TreeSet<CheckItem>();
+		        //final List<CheckItem> items = new ArrayList<CheckItem>();
 			for(String i : ids){
-				items.add(new CheckItem(i, true, library.getCatalogTreeByUrlAll(i)));
+				idItems.add(new CheckItem(i, true, library.getCatalogTreeByUrlAll(i)));
 			}
-			for (CheckItem i : items) {
-				idItems.add(i);
-			}
+			//for (CheckItem i : items) {
+			//	idItems.add(i);
+			//}
 		
 			idItems.add(new CheckSection(getLabelByKey("inactive")));
 			for(String i : inactiveIds){
@@ -253,8 +253,8 @@ public class AllCatalogsActivity extends ListActivity {
                        if(item != null){
                            if(item.isChecked() != flag){
                                item.setChecked(flag);
-                               isChanged = true;
                            }
+                           isChanged = true;
                        } 
                 }
 
