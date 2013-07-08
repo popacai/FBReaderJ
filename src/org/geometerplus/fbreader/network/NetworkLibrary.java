@@ -456,28 +456,26 @@ public class NetworkLibrary {
 
 	private void makeUpToDate() {
 		updateActiveIds();
-		
-		//final TreeSet<INetworkLink> linkSet = new TreeSet<INetworkLink>(activeLinks());
+              
                 final List<INetworkLink> linkSet = activeLinks();
 		final LinkedList<FBTree> toRemove = new LinkedList<FBTree>();
-		
+                
 		// we do remove sum tree items:
-		for (FBTree t : myRootTree.subTrees()) {
+	        for (FBTree t : myRootTree.subTrees()) {
 			if (t instanceof NetworkCatalogTree) {
 				final INetworkLink link = ((NetworkCatalogTree)t).getLink();
 				if (link != null) {
 
-                        //System.out.println(">>LINK: "+link.getTitle());
-					//if (!linkSet.contains(link)) {
-                        // 1. links not listed in activeLinks list right now
+					if (!linkSet.contains(link)) {
+						// 1. links not listed in activeLinks list right now
 						toRemove.add(t);
-					//} else if (link instanceof ICustomNetworkLink &&
-					//			((ICustomNetworkLink)link).hasChanges()) {
-                        // 2. custom links that were changed
-					//	toRemove.add(t);
-					//} else {
-					//	linkSet.remove(link);
-					//}
+					} else if (link instanceof ICustomNetworkLink &&
+								((ICustomNetworkLink)link).hasChanges()) {
+						// 2. custom links that were changed
+						toRemove.add(t);
+					} else {
+						//linkSet.remove(link);
+					}
 				} else {
 					// 3. search item
 					toRemove.add(t);
@@ -487,30 +485,40 @@ public class NetworkLibrary {
 				toRemove.add(t);
 			}
 		}
-		//for (FBTree tree : toRemove) {
-		for (FBTree tree : myRootTree.subTrees()) {
+
+		for (FBTree tree : toRemove) {
 			tree.removeSelf();
 		}
 
-		// we do add new network catalog items
-		//for (INetworkLink link : linkSet) {
-                  for (int i=linkSet.size()-1; i>=0; --i) {
-
-                        INetworkLink link = linkSet.get(i);
-			int index = 0;
-			//for (FBTree t : myRootTree.subTrees()) {
-			//	final INetworkLink l = ((NetworkTree)t).getLink();
-			//	if (l != null && link.compareTo(l) <= 0) {
-			//		break;
-			//	}
-			//	
-			//	++index;
-			//}
+                //rearrange the trees and/or add a new child 
+		int i = 0;
+                int j = 0;
+                boolean found = false;
+		for (INetworkLink link : linkSet) {
+			found = false;
+			j = 0;
+			for (FBTree t : myRootTree.subTrees()) {
+				final INetworkLink l = ((NetworkTree)t).getLink();
+				if (l != null){ 
+					if(link.getUrl(UrlInfo.Type.Catalog).equals(l.getUrl(UrlInfo.Type.Catalog))) {
+						if(i != j){
+							t.removeSelf();
+							found = false;
+						}else{
+							found = true;
+						}
+						break;
+					}
+				}
+				++j;
+			}
                         
-                        System.out.println("INSERTED: "+index+": "+link.getTitle());
-			new NetworkCatalogRootTree(myRootTree, link, index);
+			if(!found){
+				new NetworkCatalogRootTree(myRootTree, link, i);
+			}
+			++i;
 		}
-		
+
 		// we do add non-catalog items
 		new SearchCatalogTree(myRootTree, mySearchItem, 0);
 		new AddCustomCatalogItemTree(myRootTree);
