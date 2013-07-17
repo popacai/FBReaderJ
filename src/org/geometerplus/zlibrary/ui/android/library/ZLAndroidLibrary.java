@@ -48,6 +48,8 @@ public final class ZLAndroidLibrary extends ZLibrary {
 	public final ZLBooleanOption DontTurnScreenOffDuringChargingOption = new ZLBooleanOption("LookNFeel", "DontTurnScreenOffDuringCharging", true);
 	public final ZLIntegerRangeOption ScreenBrightnessLevelOption() {return new ZLIntegerRangeOption("LookNFeel", "ScreenBrightnessLevel", 0, 100, 0);}
 	public final ZLBooleanOption DisableButtonLightsOption = new ZLBooleanOption("LookNFeel", "DisableButtonLights", !hasButtonLightsBug());
+	public final ZLBooleanOption EinkOptimizationOption = new ZLBooleanOption("LookNFeel", "EinkOptimization", isEink());
+	public final ZLIntegerRangeOption EinkUpdateIntervalOption = new ZLIntegerRangeOption("LookNFeel", "EinkUpdateInterval", 0, 20, 10);
 
 	private boolean hasNoHardwareMenuButton() {
 		return
@@ -70,6 +72,25 @@ public final class ZLAndroidLibrary extends ZLibrary {
 
 	public boolean hasButtonLightsBug() {
 		return "GT-S5830".equals(Build.MODEL);
+	}
+	
+	public enum EinkType {
+		NONE,
+		NOOK,
+		NOOK12
+	}
+	
+	public  EinkType getEinkType() {
+		String MANUFACTURER = Build.MANUFACTURER;
+		String MODEL = Build.MODEL;
+		String DEVICE = Build.DEVICE;
+		boolean nook = "barnesandnoble".equals(MANUFACTURER.toLowerCase()) && ("NOOK".equals(MODEL) || "BNRV350".equals(MODEL) || "BNRV300".equals(MODEL)) && "zoom2".equals(DEVICE.toLowerCase());
+		boolean nook12 = nook && ("1.2.0".equals(Build.VERSION.INCREMENTAL) || "1.2.1".equals(Build.VERSION.INCREMENTAL));
+		return nook ? (nook12 ? EinkType.NOOK12 : EinkType.NOOK) : EinkType.NONE;
+	}
+	
+	public boolean isEink() {
+		return !getEinkType().equals(EinkType.NONE);
 	}
 
 	private FBReader myActivity;
@@ -219,7 +240,7 @@ public final class ZLAndroidLibrary extends ZLibrary {
 			return false;
 		}
 	}
-
+	
 	private final class AndroidAssetsFile extends ZLResourceFile {
 		private final AndroidAssetsFile myParent;
 

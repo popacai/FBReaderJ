@@ -22,7 +22,9 @@ package org.geometerplus.fbreader.fbreader;
 import java.util.*;
 
 import org.geometerplus.zlibrary.core.util.ZLColor;
+import org.geometerplus.zlibrary.core.library.ZLibrary;
 import org.geometerplus.zlibrary.core.options.*;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 public class ColorProfile {
 	public static final String DAY = "defaultLight";
@@ -100,8 +102,10 @@ public class ColorProfile {
 			FooterFillOption =
 				createOption(name, "FooterFillOption", 85, 85, 85);
 		} else {
+			//FIXME:
+			ZLAndroidLibrary lib = (ZLAndroidLibrary) ZLibrary.Instance();
 			WallpaperOption =
-				new ZLStringOption("Colors", name + ":Wallpaper", "wallpapers/sepia.jpg");
+				new ZLStringOption("Colors", name + ":Wallpaper", lib.isEink() ? "" : "wallpapers/sepia.jpg");
 			BackgroundOption =
 				createOption(name, "Background", 255, 255, 255);
 			SelectionBackgroundOption =

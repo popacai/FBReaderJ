@@ -737,6 +737,13 @@
 				<node name="addNewFormat" value="add new format"/>
 			</node>
 		</node>
+		<node name="eink" value="Eink">
+			<node name="summary" value="Eink options"/>
+			<node name="optimization" value="Eink optimization">
+			    <node name="summary" value="Fast refresh"/>
+			</node>
+			<node name="interval" value="Full refresh interval"/>
+		</node>
 	</node>
 	<node name="dialog">
 		<node name="button">

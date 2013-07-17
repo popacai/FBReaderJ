@@ -569,6 +569,26 @@ public class PreferenceActivity extends ZLPreferenceActivity {
 			this, cancelMenuScreen.Resource, "backKeyLongPressAction",
 			keyBindings.getOption(KeyEvent.KEYCODE_BACK, true), backKeyLongPressActions
 		));
+		
+		if (androidLibrary.isEink()) {
+			final Screen einkScreen = createPreferenceScreen("eink");
+			final ZLPreferenceSet einkPreferences = new ZLPreferenceSet();
+			
+			final ZLIntegerRangePreference einkUpd = new ZLIntegerRangePreference(this, einkScreen.Resource.getResource("interval"), androidLibrary.EinkUpdateIntervalOption);
+				final ZLBooleanPreference einkOpt = new ZLBooleanPreference(this, androidLibrary.EinkOptimizationOption, einkScreen.Resource, "optimization") {
+					@Override
+					protected void onClick() {
+						super.onClick();
+						einkPreferences.setEnabled(androidLibrary.EinkOptimizationOption.getValue());
+					}
+				};	
+	
+			einkScreen.addPreference(einkOpt);
+			einkScreen.addPreference(einkUpd);
+	
+			einkPreferences.add(einkUpd);
+			einkPreferences.setEnabled(androidLibrary.EinkOptimizationOption.getValue());
+		}
 
 		final Screen formatScreen = createPreferenceScreen("externalFormats");
 		for (String format : Formats.getPredefinedFormats()) {

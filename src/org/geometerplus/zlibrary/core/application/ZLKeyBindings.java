@@ -25,12 +25,15 @@ import android.view.KeyEvent;
 import org.geometerplus.fbreader.fbreader.ActionCode;
 import org.geometerplus.fbreader.Paths;
 
+import org.geometerplus.zlibrary.core.library.ZLibrary;
 import org.geometerplus.zlibrary.core.options.ZLBooleanOption;
 import org.geometerplus.zlibrary.core.options.ZLStringOption;
 import org.geometerplus.zlibrary.core.options.ZLStringListOption;
 import org.geometerplus.zlibrary.core.filesystem.ZLFile;
 import org.geometerplus.zlibrary.core.xml.ZLStringMap;
 import org.geometerplus.zlibrary.core.xml.ZLXMLReaderAdapter;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary.EinkType;
 
 public final class ZLKeyBindings {
 	private static final String ACTION = "Action";
@@ -92,6 +95,14 @@ public final class ZLKeyBindings {
 		volumeKeysOption.setValue(true);
 		invertVolumeKeysOption.setValue(false);
 		// end of migration code
+		//FIXME:
+		ZLAndroidLibrary lib = (ZLAndroidLibrary) ZLibrary.Instance();
+		if (lib.getEinkType().equals(EinkType.NOOK) || lib.getEinkType().equals(EinkType.NOOK12)) {
+			bindKey(92, false, ActionCode.VOLUME_KEY_SCROLL_FORWARD);
+			bindKey(94, false, ActionCode.VOLUME_KEY_SCROLL_FORWARD);
+			bindKey(93, false, ActionCode.VOLUME_KEY_SCROLL_BACK);
+			bindKey(95, false, ActionCode.VOLUME_KEY_SCROLL_BACK);
+		}
 	}
 
 	private ZLStringOption createOption(int key, boolean longPress, String defaultValue) {

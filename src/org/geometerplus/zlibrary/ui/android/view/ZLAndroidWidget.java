@@ -19,16 +19,20 @@
 
 package org.geometerplus.zlibrary.ui.android.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.*;
 import android.view.*;
 import android.util.AttributeSet;
 
+import org.geometerplus.zlibrary.core.library.ZLibrary;
 import org.geometerplus.zlibrary.core.view.ZLView;
 import org.geometerplus.zlibrary.core.view.ZLViewWidget;
 import org.geometerplus.zlibrary.core.application.ZLApplication;
+import org.geometerplus.zlibrary.ui.android.library.ZLAndroidLibrary;
 
 import org.geometerplus.android.fbreader.FBReader;
+import org.geometerplus.android.fbreader.eink.Nook2Util;
 
 public class ZLAndroidWidget extends View implements ZLViewWidget, View.OnLongClickListener {
 	private final Paint myPaint = new Paint();
@@ -68,6 +72,8 @@ public class ZLAndroidWidget extends View implements ZLViewWidget, View.OnLongCl
 			view.onScrollingFinished(ZLView.PageIndex.current);
 		}
 	}
+	
+	private int myCounter = 0;
 
 	@Override
 	protected void onDraw(final Canvas canvas) {
@@ -76,6 +82,15 @@ public class ZLAndroidWidget extends View implements ZLViewWidget, View.OnLongCl
 			((FBReader)context).createWakeLock();
 		} else {
 			System.err.println("A surprise: view's context is not an FBReader");
+		}
+		ZLAndroidLibrary lib = (ZLAndroidLibrary) ZLibrary.Instance();
+		if (lib.EinkOptimizationOption.getValue()) {
+			if (myCounter < lib.EinkUpdateIntervalOption.getValue()) {
+				Nook2Util.setGL16Mode((Activity) context);
+				myCounter++;
+			} else {
+				myCounter = 0;
+			}
 		}
 		super.onDraw(canvas);
 
