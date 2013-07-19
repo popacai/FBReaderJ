@@ -58,6 +58,8 @@ public abstract class ZLibrary {
 	abstract public int getPixelWidth();
 	abstract public int getPixelHeight();
 	abstract public List<String> defaultLanguageCodes();
+	
+	abstract public boolean isEink();
 
 	abstract public boolean supportsAllOrientations();
 	public String[] allOrientations() {

@@ -80,15 +80,22 @@ public final class ZLAndroidLibrary extends ZLibrary {
 		NOOK12
 	}
 	
-	public  EinkType getEinkType() {
+	private final EinkType myEinkType;
+	
+	{
 		String MANUFACTURER = Build.MANUFACTURER;
 		String MODEL = Build.MODEL;
 		String DEVICE = Build.DEVICE;
 		boolean nook = "barnesandnoble".equals(MANUFACTURER.toLowerCase()) && ("NOOK".equals(MODEL) || "BNRV350".equals(MODEL) || "BNRV300".equals(MODEL)) && "zoom2".equals(DEVICE.toLowerCase());
 		boolean nook12 = nook && ("1.2.0".equals(Build.VERSION.INCREMENTAL) || "1.2.1".equals(Build.VERSION.INCREMENTAL));
-		return nook ? (nook12 ? EinkType.NOOK12 : EinkType.NOOK) : EinkType.NONE;
+		myEinkType = nook ? (nook12 ? EinkType.NOOK12 : EinkType.NOOK) : EinkType.NONE;
 	}
 	
+	public  EinkType getEinkType() {
+		return myEinkType;
+	}
+	
+	@Override
 	public boolean isEink() {
 		return !getEinkType().equals(EinkType.NONE);
 	}
