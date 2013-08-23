@@ -227,6 +227,10 @@ class XMLSerializer extends AbstractSerializer {
 			"rel", "http://opds-spec.org/acquisition"
 		);
 
+		appendTag(
+				buffer, "position", true,
+				"numerator", Long.toString(book.getProgress().Numerator),
+				"denominator", Long.toString(book.getProgress().Denominator));
 		closeTag(buffer, "entry");
 	}
 
@@ -434,6 +438,8 @@ class XMLSerializer extends AbstractSerializer {
 		private final StringBuilder mySeriesTitle = new StringBuilder();
 		private final StringBuilder mySeriesIndex = new StringBuilder();
 		private boolean myHasBookmark;
+		private Long myProgressNumerator;
+		private Long myProgressDenominator;
 
 		private Book myBook;
 
@@ -488,6 +494,7 @@ class XMLSerializer extends AbstractSerializer {
 			}
 			myBook.setSeriesInfoWithNoCheck(string(mySeriesTitle), string(mySeriesIndex));
 			myBook.HasBookmark = myHasBookmark;
+			myBook.setProgress(myProgressNumerator, myProgressDenominator);
 		}
 
 		@Override
@@ -534,6 +541,9 @@ class XMLSerializer extends AbstractSerializer {
 					} else if ("link".equals(localName)) {
 						// TODO: use "rel" attribute
 						myUrl = attributes.getValue("href");
+					} else if ("progress".equals(localName)) {
+						myProgressNumerator = Long.valueOf(attributes.getValue("numerator"));
+						myProgressDenominator = Long.valueOf(attributes.getValue("denominator"));
 					} else {
 						throw new SAXException("Unexpected tag " + localName);
 					}

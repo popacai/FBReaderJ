@@ -27,6 +27,7 @@ import org.geometerplus.zlibrary.core.filesystem.*;
 import org.geometerplus.zlibrary.core.image.ZLImage;
 import org.geometerplus.zlibrary.core.resources.ZLResource;
 import org.geometerplus.zlibrary.core.util.MiscUtil;
+import org.geometerplus.zlibrary.core.util.RationalNumber;
 
 import org.geometerplus.fbreader.Paths;
 import org.geometerplus.fbreader.bookmodel.BookReadingException;
@@ -55,6 +56,8 @@ public class Book extends TitledEntity {
 
 	private static final WeakReference<ZLImage> NULL_IMAGE = new WeakReference<ZLImage>(null);
 	private WeakReference<ZLImage> myCover;
+	
+	private volatile RationalNumber myProgress = new RationalNumber(0, 1);
 
 	Book(long id, ZLFile file, String title, String encoding, String language) {
 		super(title);
@@ -274,6 +277,16 @@ public class Book extends TitledEntity {
 		}
 	}
 
+	public RationalNumber getProgress() {
+		return myProgress;
+	}
+	
+	public void setProgress(long numerator, long denominator) {
+		if (denominator != 0) {
+			myProgress = new RationalNumber(numerator, denominator);
+		}
+	}
+	
 	public String getEncoding() {
 		if (myEncoding == null) {
 			try {
