@@ -116,12 +116,7 @@ public class NetworkLibrary {
 	}
 
 	public List<String> activeLanguageCodes() {
-		//if(isFirstLaunch){
-		//	isFirstLaunch = false;
-			return activeLanguageCodesOption().getValue();
-		//}else{
-		//	return new ArrayList<String>();
-		//}
+		return activeLanguageCodesOption().getValue();
 	}
 
 	public void setActiveLanguageCodes(Collection<String> codes) {
@@ -174,7 +169,7 @@ public class NetworkLibrary {
 				new ZLStringListOption(
 					"Options",
 					"ActiveIds",
-					ZLibrary.Instance().defaultIds(),
+					"",
 					","
 				);
 		}
@@ -197,23 +192,8 @@ public class NetworkLibrary {
 	public void setActiveIds(Collection<String> ids) {
 		final TreeSet<String> allCodes = new TreeSet<String>();
 		
-		//add default catalog ids which are matched to link ids
-		boolean found = false;
-		for(String did : ZLibrary.Instance().defaultIds()){
-			for(String id : linkIds()){
-				if(did.equals(id)){
-					found = true;
-					break;
-				}
-			}
-			if(found){
-				allCodes.add(did);
-			}
-			found = false;
-		}
-		allCodes.removeAll(linkIds());
 		allCodes.addAll(ids);
-
+		
 		final ArrayList<String> codesList = new ArrayList<String>(allCodes.size());
 		for (String l : allCodes) {
 			codesList.add(l);
@@ -224,7 +204,6 @@ public class NetworkLibrary {
 	}
 
 	List<INetworkLink> activeLinks() {
-		
 		final LinkedList<INetworkLink> filteredList = new LinkedList<INetworkLink>();
 		final Collection<String> ids = activeIds();
 		synchronized (myLinks) {
