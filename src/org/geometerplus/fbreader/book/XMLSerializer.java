@@ -227,10 +227,13 @@ class XMLSerializer extends AbstractSerializer {
 			"rel", "http://opds-spec.org/acquisition"
 		);
 
-		appendTag(
-				buffer, "position", true,
-				"numerator", Long.toString(book.getProgress().Numerator),
-				"denominator", Long.toString(book.getProgress().Denominator));
+		if (null != book.getProgress()) {
+			appendTag(
+					buffer, "position", true,
+					"numerator", Long.toString(book.getProgress().Numerator),
+					"denominator", Long.toString(book.getProgress().Denominator));
+		}
+	
 		closeTag(buffer, "entry");
 	}
 
@@ -464,6 +467,8 @@ class XMLSerializer extends AbstractSerializer {
 			myTags.clear();
 			myLabels.clear();
 			myHasBookmark = false;
+			myProgressNumerator = 0l;
+			myProgressDenominator = 1l;
 
 			myState = State.READ_NOTHING;
 		}
@@ -494,7 +499,9 @@ class XMLSerializer extends AbstractSerializer {
 			}
 			myBook.setSeriesInfoWithNoCheck(string(mySeriesTitle), string(mySeriesIndex));
 			myBook.HasBookmark = myHasBookmark;
+			
 			myBook.setProgress(myProgressNumerator, myProgressDenominator);
+			System.err.println("In deserializer: " + myBook.getTitle() + myBook.getProgress().Numerator);
 		}
 
 		@Override
@@ -541,7 +548,7 @@ class XMLSerializer extends AbstractSerializer {
 					} else if ("link".equals(localName)) {
 						// TODO: use "rel" attribute
 						myUrl = attributes.getValue("href");
-					} else if ("progress".equals(localName)) {
+					} else if ("position".equals(localName)) {
 						myProgressNumerator = Long.valueOf(attributes.getValue("numerator"));
 						myProgressDenominator = Long.valueOf(attributes.getValue("denominator"));
 					} else {
