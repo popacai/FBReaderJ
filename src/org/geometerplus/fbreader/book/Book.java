@@ -89,6 +89,7 @@ public class Book extends TitledEntity {
 		myLabels = book.myLabels != null ? new ArrayList<String>(book.myLabels) : null;
 		mySeriesInfo = book.mySeriesInfo;
 		HasBookmark = book.HasBookmark;
+		myProgress = book.getProgress();
 	}
 
 	public void reloadInfoFromFile() {
@@ -281,10 +282,8 @@ public class Book extends TitledEntity {
 		return myProgress;
 	}
 	
-	public void setProgress(long numerator, long denominator) {
-		if (denominator != 0) {
-			myProgress = new RationalNumber(numerator, denominator);
-		}
+	public void setProgress(RationalNumber progress) {
+		myProgress = progress;
 	}
 	
 	public String getEncoding() {
@@ -438,7 +437,6 @@ public class Book extends TitledEntity {
 		if (!force && myId != -1 && myIsSaved) {
 			return false;
 		}
-
 		database.executeAsTransaction(new Runnable() {
 			public void run() {
 				if (myId >= 0) {
@@ -477,6 +475,9 @@ public class Book extends TitledEntity {
 				database.deleteAllBookUids(myId);
 				for (UID uid : uids()) {
 					database.saveBookUid(myId, uid);
+				}
+				if (null != myProgress) {
+					database.savePosition(myId, myProgress);
 				}
 			}
 		});

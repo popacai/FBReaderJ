@@ -25,6 +25,7 @@ import java.text.ParseException;
 
 import org.geometerplus.zlibrary.core.constants.XMLNamespaces;
 import org.geometerplus.zlibrary.core.filesystem.ZLFile;
+import org.geometerplus.zlibrary.core.util.RationalNumber;
 import org.geometerplus.zlibrary.core.util.ZLColor;
 
 import org.geometerplus.zlibrary.text.view.ZLTextPosition;
@@ -441,8 +442,8 @@ class XMLSerializer extends AbstractSerializer {
 		private final StringBuilder mySeriesTitle = new StringBuilder();
 		private final StringBuilder mySeriesIndex = new StringBuilder();
 		private boolean myHasBookmark;
-		private Long myProgressNumerator;
-		private Long myProgressDenominator;
+		private long myProgressNumerator;
+		private long myProgressDenominator;
 
 		private Book myBook;
 
@@ -467,8 +468,8 @@ class XMLSerializer extends AbstractSerializer {
 			myTags.clear();
 			myLabels.clear();
 			myHasBookmark = false;
-			myProgressNumerator = 0l;
-			myProgressDenominator = 1l;
+			myProgressNumerator = 0;
+			myProgressDenominator = 1;
 
 			myState = State.READ_NOTHING;
 		}
@@ -500,8 +501,7 @@ class XMLSerializer extends AbstractSerializer {
 			myBook.setSeriesInfoWithNoCheck(string(mySeriesTitle), string(mySeriesIndex));
 			myBook.HasBookmark = myHasBookmark;
 			
-			myBook.setProgress(myProgressNumerator, myProgressDenominator);
-			System.err.println("In deserializer: " + myBook.getTitle() + myBook.getProgress().Numerator);
+			myBook.setProgress(new RationalNumber(myProgressNumerator, myProgressDenominator));
 		}
 
 		@Override

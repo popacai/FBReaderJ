@@ -157,6 +157,7 @@ final class SQLiteBooksDatabase extends BooksDatabase {
 			);
 		}
 		cursor.close();
+		book.setProgress(loadPosition(book.getId()));
 		return book;
 	}
 
@@ -1054,10 +1055,10 @@ final class SQLiteBooksDatabase extends BooksDatabase {
 				"INSERT OR REPLACE INTO BookReadingProgress (book_id,numerator,denominator) VALUES (?,?,?)"
 			);
 		}
-		myStorePositionStatement.bindLong(1, bookId);
-		myStorePositionStatement.bindLong(2, progress.Numerator);
-		myStorePositionStatement.bindLong(3, progress.Denominator);
-		myStorePositionStatement.execute();
+		myPositionStatement.bindLong(1, bookId);
+		myPositionStatement.bindLong(2, progress.Numerator);
+		myPositionStatement.bindLong(3, progress.Denominator);
+		myPositionStatement.execute();
 	}
 
 	@Override

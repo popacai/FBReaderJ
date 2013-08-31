@@ -24,6 +24,11 @@ public class RationalNumber {
 	public final long Denominator;
 	
 	public RationalNumber(long numerator, long denominator) {
+		if (0 == denominator) {
+			Numerator = 0;
+			Denominator = 1;
+			return;
+		}
 		Numerator = numerator;
 		Denominator = denominator;
 	}
