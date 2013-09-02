@@ -32,6 +32,7 @@ import org.geometerplus.zlibrary.core.util.ZLColor;
 import org.geometerplus.zlibrary.text.hyphenation.ZLTextHyphenator;
 import org.geometerplus.zlibrary.text.model.ZLTextModel;
 import org.geometerplus.zlibrary.text.view.*;
+import org.geometerplus.zlibrary.text.view.ZLTextView.PagePosition;
 
 import org.geometerplus.fbreader.book.*;
 import org.geometerplus.fbreader.bookmodel.*;
@@ -316,6 +317,7 @@ public final class FBReaderApp extends ZLApplication {
 		onViewChanged();
 
 		storePosition();
+		saveProgress();
 		
 		BookTextView.setModel(null);
 		FootnoteView.setModel(null);
@@ -420,7 +422,7 @@ public final class FBReaderApp extends ZLApplication {
 
 	public void onWindowClosing() {
 		storePosition();
-		saveProgress(75, 100);
+		saveProgress();
 	}
 
 	public void storePosition() {
@@ -429,7 +431,11 @@ public final class FBReaderApp extends ZLApplication {
 		}
 	}
 
-	public void saveProgress(long numerator, long denominator) {
+	public void saveProgress() {
+		final FBView view = getTextView();
+		final PagePosition pagePosition = view.pagePosition();
+		final long numerator = pagePosition.Current;
+		final long denominator = pagePosition.Total;
 		if (Model != null && Model.Book != null) {
 			Model.Book.setProgress(new RationalNumber(numerator, denominator));
 			Collection.saveBook(Model.Book, false);
