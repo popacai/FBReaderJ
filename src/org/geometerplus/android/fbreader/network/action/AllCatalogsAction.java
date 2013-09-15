@@ -31,7 +31,7 @@ import org.geometerplus.android.fbreader.OrientationUtil;
 import org.geometerplus.android.fbreader.network.AllCatalogsActivity;
 
 public class AllCatalogsAction extends RootAction {
-	
+
 	public AllCatalogsAction(Activity activity) {
 		super(activity, ActionCode.LIBRARY_FILTER, "allCatalogs", true);
 	}
@@ -39,11 +39,11 @@ public class AllCatalogsAction extends RootAction {
 	@Override
 	public void run(NetworkTree tree) {
 		final NetworkLibrary library = NetworkLibrary.Instance();
-				
+
 		final List<String> activeIds = library.activeIds();
 		ArrayList<String> ids = new ArrayList<String>();
 		ids.addAll(activeIds);
-		
+
 		final ArrayList<String> inactiveIds = new ArrayList<String>();
 		boolean found = false;
 		for(String id : library.linkIds()){
@@ -58,7 +58,7 @@ public class AllCatalogsAction extends RootAction {
 			}
 			found = false;
 		}
-		
+
 		OrientationUtil.startActivity(
 				myActivity,
 				new Intent(myActivity.getApplicationContext(), AllCatalogsActivity.class)
@@ -66,5 +66,4 @@ public class AllCatalogsAction extends RootAction {
 				.putStringArrayListExtra(AllCatalogsActivity.INACTIVE_IDS_LIST, inactiveIds)
 			);
 	}
-
 }

@@ -90,7 +90,7 @@ public class NetworkLibrary {
 
 	private final Map<String,WeakReference<ZLImage>> myImageMap =
 		Collections.synchronizedMap(new HashMap<String,WeakReference<ZLImage>>());
-	
+
 	public List<String> languageCodes() {
 		final TreeSet<String> languageSet = new TreeSet<String>();
 		synchronized (myLinks) {
@@ -138,7 +138,7 @@ public class NetworkLibrary {
 		activeLanguageCodesOption().setValue(codesList);
 		invalidateChildren();
 	}
-	
+
 	public List<String> linkIds() {
 		final TreeSet<String> idSet = new TreeSet<String>();
 		synchronized (myLinks) {
@@ -148,7 +148,7 @@ public class NetworkLibrary {
 		}
 		return new ArrayList<String>(idSet);
 	}
-	
+
 	private ZLBooleanOption firstLaunchOption;
 	private ZLBooleanOption myFirstLaunchOption() {
  		if (firstLaunchOption == null) {
@@ -161,7 +161,7 @@ public class NetworkLibrary {
 		}
 		return firstLaunchOption;
 	}
-	
+
 	private ZLStringListOption myActiveIdsOption;
 	private ZLStringListOption activeIdsOption() {
  		if (myActiveIdsOption == null) {
@@ -175,11 +175,11 @@ public class NetworkLibrary {
 		}
 		return myActiveIdsOption;
 	}
-	
+
 	public List<String> activeIds() {
 		return activeIdsOption().getValue();
 	}
-	
+
 	public void setActiveOneId(String id){
 		List<String> ids = activeIdsOption().getValue();
 		final ArrayList<String> codesList = new ArrayList<String>();
@@ -188,12 +188,12 @@ public class NetworkLibrary {
 		activeIdsOption().setValue(codesList);
 		invalidateChildren();
 	}
-	
+
 	public void setActiveIds(Collection<String> ids) {
 		final TreeSet<String> allCodes = new TreeSet<String>();
-		
+
 		allCodes.addAll(ids);
-		
+
 		final ArrayList<String> codesList = new ArrayList<String>(allCodes.size());
 		for (String l : allCodes) {
 			codesList.add(l);
@@ -242,7 +242,7 @@ public class NetworkLibrary {
 		}
 		return null;
 	}
-	
+
 	public NetworkTree getCatalogTreeByUrlAll(String url) {
 		for (FBTree tree : getRootAllTree().subTrees()) {
 			if (tree instanceof NetworkCatalogRootTree) {
@@ -408,7 +408,7 @@ public class NetworkLibrary {
 	public void invalidateVisibility() {
 		myUpdateVisibility = true;
 	}
-	
+
 	private void makeUpToDateRootAll() {
 		myRootAllTree.clear();
 		synchronized (myLinks) {
@@ -428,11 +428,11 @@ public class NetworkLibrary {
 
 	private void makeUpToDate() {
 		updateActiveIds();
-		
+
 		final SortedSet<INetworkLink> linkSet = new TreeSet<INetworkLink>(activeLinks());
 
 		final LinkedList<FBTree> toRemove = new LinkedList<FBTree>();
-		
+
 		// we do remove sum tree items:
 		for (FBTree t : myRootTree.subTrees()) {
 			if (t instanceof NetworkCatalogTree) {
@@ -469,22 +469,22 @@ public class NetworkLibrary {
 				if (l != null && link.compareTo(l) <= 0) {
 					break;
 				}
-				
+
 				++index;
 			}
 			new NetworkCatalogRootTree(myRootTree, link, index);
 		}
-		
+
 		// we do add non-catalog items
 		new SearchCatalogTree(myRootTree, mySearchItem, 0);
 		new AddCustomCatalogItemTree(myRootTree);
 
 		fireModelChangedEvent(ChangeListener.Code.SomeCode);
 	}
-	
+
 	private void updateActiveIds(){
 		if(!myFirstLaunchOption().getValue()) return;
-		
+
 		ArrayList<String> ids = new ArrayList<String>();
 		final Collection<String> codes = activeLanguageCodes();
 		synchronized (myLinks) {
@@ -496,7 +496,7 @@ public class NetworkLibrary {
 			}
 		}
 		setActiveIds(ids);
-	
+
 		myFirstLaunchOption().setValue(false);
 	}
 
@@ -524,7 +524,7 @@ public class NetworkLibrary {
 	public NetworkTree getRootTree() {
 		return myRootTree;
 	}
-	
+
 	public NetworkTree getRootAllTree() {
 		return myRootAllTree;
 	}
