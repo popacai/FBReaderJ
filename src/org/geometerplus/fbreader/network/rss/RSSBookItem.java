@@ -28,27 +28,28 @@ import org.geometerplus.fbreader.network.atom.ATOMCategory;
 import org.geometerplus.fbreader.network.urlInfo.UrlInfoCollection;
 
 public class RSSBookItem extends NetworkBookItem {
-	
-	public RSSBookItem(RSSNetworkLink link, String id, int index,
-			CharSequence title, CharSequence summary,
-			List<AuthorData> authors, List<String> tags,
-			String seriesTitle, float indexInSeries,
-			UrlInfoCollection<?> urls) {
-			super(link, id, index,
-				title, summary,
-				authors, tags,
-				seriesTitle, indexInSeries,
-				urls
-			);
-		}
-	
+	public RSSBookItem(
+		RSSNetworkLink link, String id, int index,
+		CharSequence title, CharSequence summary,
+		List<AuthorData> authors, List<String> tags,
+		String seriesTitle, float indexInSeries,
+		UrlInfoCollection<?> urls
+	) {
+		super(link, id, index,
+			title, summary,
+			authors, tags,
+			seriesTitle, indexInSeries,
+			urls
+		);
+	}
+
 	RSSBookItem(RSSNetworkLink networkLink, RSSItem entry, String baseUrl, int index) {
 		this(networkLink, entry.Id.Uri, index,
 			entry.Title, getAnnotation(entry),
 			getAuthors(entry), getTags(entry), null, 0, null
 		);
 	}
-	
+
 	private static CharSequence getAnnotation(RSSItem entry) {
 		if (entry.Content != null) {
 			return entry.Content;
@@ -58,7 +59,7 @@ public class RSSBookItem extends NetworkBookItem {
 		}
 		return null;
 	}
-	
+
 	private static List<AuthorData> getAuthors(RSSItem entry) {
 		final LinkedList<AuthorData> authors = new LinkedList<AuthorData>();
 		for (ATOMAuthor author: entry.Authors) {
@@ -66,7 +67,7 @@ public class RSSBookItem extends NetworkBookItem {
 		}
 		return authors;
 	}
-	
+
 	private static List<String> getTags(RSSItem entry) {
 		final LinkedList<String> tags = new LinkedList<String>();
 		for (ATOMCategory category : entry.Categories) {

@@ -27,5 +27,4 @@ public class RSSCategory extends ATOMCategory {
 	RSSCategory(ZLStringMap source){
 		super(source);
 	}
-	
 }

@@ -6,10 +6,9 @@ import org.geometerplus.fbreader.network.urlInfo.UrlInfoCollection;
 import org.geometerplus.fbreader.network.urlInfo.UrlInfoWithDate;
 
 public class NetworkLinkCreator {
-	
 	public NetworkLinkCreator() {
 	}
-	
+
 	public AbstractNetworkLink createOPDSLink(int id, String predifinedId, String siteName, CharSequence title, CharSequence summary, String language, UrlInfoCollection<UrlInfoWithDate> infos){
 		return new OPDSPredefinedNetworkLink(
 				id,
@@ -21,7 +20,7 @@ public class NetworkLinkCreator {
 				infos
 			);
 	}
-	
+
 	public AbstractNetworkLink createRSSLink(int id, String siteName, CharSequence title, CharSequence summary, String language, UrlInfoCollection<UrlInfoWithDate> infos){
 		return new RSSNetworkLink(
 				id,
