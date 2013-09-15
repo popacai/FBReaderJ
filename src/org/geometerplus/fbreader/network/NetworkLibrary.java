@@ -116,7 +116,12 @@ public class NetworkLibrary {
 	}
 
 	public List<String> activeLanguageCodes() {
-		return activeLanguageCodesOption().getValue();
+		//if(isFirstLaunch){
+		//	isFirstLaunch = false;
+			return activeLanguageCodesOption().getValue();
+		//}else{
+		//	return new ArrayList<String>();
+		//}
 	}
 
 	public void setActiveLanguageCodes(Collection<String> codes) {
@@ -204,6 +209,7 @@ public class NetworkLibrary {
 	}
 
 	List<INetworkLink> activeLinks() {
+
 		final LinkedList<INetworkLink> filteredList = new LinkedList<INetworkLink>();
 		final Collection<String> ids = activeIds();
 		synchronized (myLinks) {
