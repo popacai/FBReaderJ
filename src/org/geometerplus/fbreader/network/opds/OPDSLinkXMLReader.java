@@ -41,7 +41,7 @@ class OPDSLinkXMLReader extends OPDSXMLReader implements OPDSConstants {
 		private final HashMap<RelationAlias, String> myRelationAliases = new HashMap<RelationAlias, String>();
 		private final LinkedHashMap<String,String> myExtraData = new LinkedHashMap<String,String>();
 		private final NetworkLinkCreator linkCreator = new NetworkLinkCreator();
-		
+
 		List<INetworkLink> links() {
 			return myLinks;
 		}

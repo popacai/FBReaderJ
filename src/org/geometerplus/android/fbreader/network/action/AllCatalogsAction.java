@@ -31,40 +31,22 @@ import org.geometerplus.android.fbreader.OrientationUtil;
 import org.geometerplus.android.fbreader.network.AllCatalogsActivity;
 
 public class AllCatalogsAction extends RootAction {
-	
 	public AllCatalogsAction(Activity activity) {
-		super(activity, ActionCode.LIBRARY_FILTER, "allCatalogs", true);
+		super(activity, ActionCode.SHOW_CATALOGS_FILTER, "allCatalogs", true);
 	}
 
 	@Override
 	public void run(NetworkTree tree) {
 		final NetworkLibrary library = NetworkLibrary.Instance();
-				
-		final List<String> activeIds = library.activeIds();
-		ArrayList<String> ids = new ArrayList<String>();
-                ids.addAll(activeIds);
-		
-		final ArrayList<String> inactiveIds = new ArrayList<String>();
-		boolean found = false;
-		for(String id : library.linkIds()){
-			for(String aid : activeIds){
-				if(id.equals(aid)){
-					found = true;
-					break;
-				}
-			}
-			if(!found){
-				inactiveIds.add(id);
-			}
-			found = false;
-		}
-		
-		OrientationUtil.startActivity(
-				myActivity,
-				new Intent(myActivity.getApplicationContext(), AllCatalogsActivity.class)
-				.putStringArrayListExtra(AllCatalogsActivity.IDS_LIST, ids)
-				.putStringArrayListExtra(AllCatalogsActivity.INACTIVE_IDS_LIST, inactiveIds)
-			);
-	}
+		final ArrayList<String> ids = new ArrayList<String>(library.activeIds());
+		final ArrayList<String> inactiveIds = new ArrayList<String>(library.linkIds());
+		inactiveIds.removeAll(ids);
 
+		OrientationUtil.startActivity(
+			myActivity,
+			new Intent(myActivity.getApplicationContext(), AllCatalogsActivity.class)
+			  .putStringArrayListExtra(AllCatalogsActivity.IDS_LIST, ids)
+			  .putStringArrayListExtra(AllCatalogsActivity.INACTIVE_IDS_LIST, inactiveIds)
+		);
+	}
 }

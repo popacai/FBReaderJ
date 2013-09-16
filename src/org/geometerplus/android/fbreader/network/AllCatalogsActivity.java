@@ -30,64 +30,62 @@ import android.widget.*;
 
 import org.geometerplus.zlibrary.ui.android.R;
 import org.geometerplus.fbreader.network.*;
-import org.geometerplus.fbreader.network.tree.NetworkCatalogRootTree;
 import org.geometerplus.android.fbreader.covers.CoverManager;
 
 import com.mobeta.android.dslv.DragSortListView;
 import com.mobeta.android.dslv.DragSortListView.RemoveListener;
-
-public class AllCatalogsActivity extends ListActivity {
-	final NetworkLibrary library = NetworkLibrary.Instance();
-	CheckListAdapter myAdapter;
-	ArrayList<String> ids = new ArrayList<String>();
-	ArrayList<String> inactiveIds = new ArrayList<String>();
 	
+public class AllCatalogsActivity extends ListActivity {
+	final NetworkLibrary myLibrary = NetworkLibrary.Instance();
+	private ArrayList<Item> myAllItems = new ArrayList<Item>();
+	ArrayList<String> myIds = new ArrayList<String>();
+	ArrayList<String> myInactiveIds = new ArrayList<String>();
+
 	public final static String IDS_LIST = "org.geometerplus.android.fbreader.network.IDS_LIST";
 	public final static String INACTIVE_IDS_LIST = "org.geometerplus.android.fbreader.network.INACTIVE_IDS_LIST";
-	
-	private boolean isChanged = false;
-	
+
+	private boolean myIsChanged = false;
+
 	@Override
 	protected void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
-
 		setContentView(R.layout.network_library_filter);
-		
 		Intent intent = getIntent();
-		ids = intent.getStringArrayListExtra(IDS_LIST);
-		inactiveIds = intent.getStringArrayListExtra(INACTIVE_IDS_LIST);
-		
+		myIds = intent.getStringArrayListExtra(IDS_LIST);
+		myInactiveIds = intent.getStringArrayListExtra(INACTIVE_IDS_LIST);
 	}
-	
+
 	@Override
 	protected void onStart() {
 		super.onStart();
-	
-		ArrayList<CheckItem> idItems = new ArrayList<CheckItem>();
-			idItems.add(new CheckSection(getLabelByKey("active")));
 
-		        //final List<CheckItem> items = new ArrayList<CheckItem>();
-			for(String i : ids){
-				idItems.add(new CheckItem(i, true, library.getCatalogTreeByUrlAll(i)));
+		myAllItems.clear();
+		if (myIds.size() > 0) {
+			myAllItems.add(new SectionItem("active"));
+			final List<CatalogItem> cItems = new ArrayList<CatalogItem>();
+			for (String id : myIds) {
+				cItems.add(new CatalogItem(id, true, myLibrary.getCatalogTreeByUrlAll(id)));
 			}
-			//for (CheckItem i : items) {
-			//	idItems.add(i);
-			//}
-		
-			idItems.add(new CheckSection(getLabelByKey("inactive")));
-			for(String i : inactiveIds){
-				idItems.add(new CheckItem(i, false, library.getCatalogTreeByUrlAll(i)));
+			myAllItems.addAll(cItems);
+		}
+
+		if (myInactiveIds.size() > 0) {
+			myAllItems.add(new SectionItem("inactive"));
+			final List<CatalogItem> cItems = new ArrayList<CatalogItem>();
+			for (String id : myInactiveIds) {
+				cItems.add(new CatalogItem(id, false, myLibrary.getCatalogTreeByUrlAll(id)));
 			}
-		
-		
-                myAdapter = new CheckListAdapter(this, R.layout.checkbox_item, idItems, this);
+			myAllItems.addAll(cItems);
+		}
+
                 DragSortListView list = getListView();
-                list.setAdapter(myAdapter);
+		list.setAdapter(new CatalogsListAdapter());
                 list.setDropListener(onDrop);
                 list.setRemoveListener(onRemove);
+		//setListAdapter(new CatalogsListAdapter());
 	}
 
-        private DragSortListView.DropListener onDrop =
+	private DragSortListView.DropListener onDrop =
         new DragSortListView.DropListener() {
             @Override
             public void drop(int from, int to) {
@@ -96,11 +94,16 @@ public class AllCatalogsActivity extends ListActivity {
                         to = 1;
                     }
                     DragSortListView list = getListView();
-                    CheckItem item = myAdapter.getItem(from);
-                    myAdapter.remove(item);
-                    myAdapter.insert(item, to);
-                    myAdapter.reCheckAll(item, to);
-                    list.moveCheckState(from, to);
+		    if(list.getInputAdapter() instanceof CatalogsListAdapter){
+                    	CatalogsListAdapter myAdapter = (CatalogsListAdapter)list.getInputAdapter();
+                    	Item item = myAdapter.getItem(from);
+			if(item instanceof CatalogItem){
+				myAdapter.remove(item);
+                    		myAdapter.insert(item, to);
+                    		myAdapter.reCheckAll(item, to);
+                    		list.moveCheckState(from, to);
+			}
+		    }
                 }
             }
         };
@@ -110,9 +113,14 @@ public class AllCatalogsActivity extends ListActivity {
             @Override
             public void remove(int which) {
                 DragSortListView list = getListView();
-                CheckItem item = myAdapter.getItem(which);
-                myAdapter.remove(item);
-                list.removeCheckState(which);
+		if(list.getInputAdapter() instanceof CatalogsListAdapter){
+                	CatalogsListAdapter myAdapter = (CatalogsListAdapter)list.getInputAdapter();
+                	Item item = myAdapter.getItem(which);
+			if(item instanceof CatalogItem){
+                		myAdapter.remove(item);
+                		list.removeCheckState(which);
+			}
+		}
             }
         };
 
@@ -121,124 +129,85 @@ public class AllCatalogsActivity extends ListActivity {
         public DragSortListView getListView() {
                return (DragSortListView) super.getListView();
         }
-	
-	private String getLabelByKey(String keyName) {
-		return NetworkLibrary.resource().getResource("allCatalogs").getResource(keyName).getValue();
-	}
-	
+
 	@Override
 	protected void onResume() {
 		super.onResume();
 	}
-	
+
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
 	}
-	
+
 	@Override
 	protected void onStop() {
 		super.onStop();
-		if(isChanged){
-			ArrayList<String> ids = new ArrayList<String>();
-                        for (int i = 0; i < myAdapter.getCount(); i++){
-                                CheckItem item = myAdapter.getItem(i);
-				if(!item.isSection() && item.isChecked()){
-					ids.add(item.getId());
+		if (myIsChanged) {
+			final ArrayList<String> ids = new ArrayList<String>();
+			for (Item item : myAllItems) {
+				if (item instanceof CatalogItem) {
+					final CatalogItem catalogItem = (CatalogItem)item;
+					if (catalogItem.IsChecked) {
+						ids.add(catalogItem.Id);
+					}
 				}
 			}
-			library.setActiveIds(ids);
-			library.synchronize();
+			System.out.println("ONSTOP: "+myIsChanged);
+			myLibrary.setActiveIds(ids);
+			myLibrary.synchronize();
 		}
 	}
-	
-	private class CheckItem implements Comparable<CheckItem>{
-		private String myId;
-		private boolean isChecked;
-		NetworkTree myTree = null;
-		
-		public CheckItem(String id, boolean checked, NetworkTree tree){
-			myId = id;
-			isChecked = checked;
-			if(tree instanceof NetworkCatalogRootTree){
-				myTree = tree;
-			}else{
-				System.out.println("Tree parameter should be an instance of NetworkCatalogRootTree");
-			}
+
+	private static interface Item {
+	}
+
+	private static class SectionItem implements Item {
+		private final String Title;
+
+		public SectionItem(String key) {
+			Title = NetworkLibrary.resource().getResource("allCatalogs").getResource(key).getValue();
 		}
-		
-		public CheckItem(String id, boolean checked){
-			myId = id;
-			isChecked = checked;
+	}
+
+	private static class CatalogItem implements Item, Comparable<CatalogItem> {
+		private final String Id;
+		private final NetworkTree Tree;
+		private boolean IsChecked;
+
+		public CatalogItem(String id, boolean checked, NetworkTree tree) {
+			Id = id;
+			IsChecked = checked;
+			Tree = tree;
 		}
-		
-		public String getId(){
-			return myId;
+
+		public String getTitle() {
+			return Tree.getLink().getTitle();
 		}
-		
-		public NetworkTree getTree(){
-			return myTree;
-		}
-		
-		public String getTitle(){
-                        if(myTree != null){
-			    return myTree.getLink().getTitle();
-                        }else{
-                            return "";
-                        }
-		}
-		
-		public String getTitleLower(){
+
+		public String getTitleLower() {
 			return getTitle().toLowerCase(Locale.getDefault());
-		}
-		
-		public boolean isChecked(){
-			return isChecked;
-		}
-		
-		public void setChecked(boolean value){
-			isChecked = value;
-		}
-		
-		public boolean isSection(){
-			return false;
 		}
 
 		@Override
-		public int compareTo(CheckItem another) {
+		public int compareTo(CatalogItem another) {
 			return getTitleLower().compareTo(another.getTitleLower());
 		}
 	}
-	
-	private class CheckSection extends CheckItem{
-		public CheckSection(String title){
-			super(title, false);
-		}
-		public boolean isSection(){
-			return true;
-		}
-	}
-	
-	private class CheckListAdapter extends ArrayAdapter<CheckItem> {
-		ListActivity myActivity;
+
+	private class CatalogsListAdapter extends ArrayAdapter<Item> {
 		private CoverManager myCoverManager;
-		private ArrayList<CheckItem> items = new ArrayList<CheckItem>();
-		
-		public CheckListAdapter(Context context, int textViewResourceId, List<CheckItem> objects, ListActivity activity) {
-			super(context, textViewResourceId, objects);
-			myActivity = activity;
-			items.addAll(objects);
-		}
-		
-		public ArrayList<CheckItem> getItems(){
-			return items;
+
+		public CatalogsListAdapter() {
+			super(AllCatalogsActivity.this, R.layout.checkbox_item, myAllItems);
 		}
                 
-                public void reCheckAll(CheckItem item, int index){
+                public void reCheckAll(Item item, int index){
+			System.out.println(" --> "+index);
                        boolean flag = false;
                        for (int i=0; i < getCount(); i++){
-                           CheckItem it = getItem(i);
-                           if(it.isSection()){
+                           Item it = getItem(i);
+                           if(it instanceof SectionItem){
                                if(i>0){
                                   if(index > i){
                                      flag = false;
@@ -246,84 +215,69 @@ public class AllCatalogsActivity extends ListActivity {
                                      flag = true;
                                   }
                                   break;
-                               }
+                               }else{
+					flag = true;
+			       }
                            }
                        }
                         
-                       if(item != null){
-                           if(item.isChecked() != flag){
-                               item.setChecked(flag);
-                           }
-                           isChanged = true;
+                       if(item != null && item instanceof CatalogItem){
+				final CatalogItem catalogItem = (CatalogItem)item;
+				System.out.println(catalogItem.IsChecked+" == "+flag);
+                          	if(catalogItem.IsChecked != flag){
+					catalogItem.IsChecked = flag;
+                           	}
+                           	myIsChanged = true;
                        } 
                 }
 
 		@Override
 		public View getView(int position, View convertView, final ViewGroup parent) {
-			
-			View v = convertView;
-			CheckItem item = this.getItem(position); 
-			
-		    if (item != null) {
-		    	if(item.isSection()){
-		    	        LayoutInflater vi;
-		    		vi = LayoutInflater.from(getContext());
-		    		v = vi.inflate(R.layout.checkbox_section, null);
-		    		TextView tt = (TextView) v.findViewById(R.id.title);
-		    		if (tt != null) {
-		    			tt.setText(item.getId());
-		    		}
-		    	}else{
-				LayoutInflater vi;
-				vi = LayoutInflater.from(getContext());
-				    v = vi.inflate(R.layout.checkbox_item, null);
+			final Item item = getItem(position);
 
-                                    if (myCoverManager == null) {
-                                                v.measure(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                                                final int coverHeight = v.getMeasuredHeight();
-                                                myCoverManager = new CoverManager(myActivity, coverHeight * 15 / 12, coverHeight);
-                                                v.requestLayout();
-                                        }
-				    
+			final View view;
+			if (convertView != null && item.getClass().equals(convertView.getTag())) {
+				view = convertView;
+			} else {
+				view = getLayoutInflater().inflate(
+					item instanceof SectionItem
+						? R.layout.checkbox_section : R.layout.checkbox_item,
+					null
+				);
+				view.setTag(item.getClass());
+			}
 
-				    NetworkTree t = item.getTree();
-		    	
-		    		if(t != null){
-		    			INetworkLink link = t.getLink();
-		    			TextView tt = (TextView)v.findViewById(R.id.title);
-		    			if (tt != null) {
-		    				tt.setText(link.getTitle());
-		    			}
-		    			tt = (TextView)v.findViewById(R.id.subtitle);
-		    			if (tt != null) {
-		    				tt.setText(link.getSummary());
-		    			}
-		    			
-		    			ImageView coverView = (ImageView)v.findViewById(R.id.drag_handle);
-		    			if (!myCoverManager.trySetCoverImage(coverView, t)) {
-		    				coverView.setImageResource(R.drawable.ic_list_library_books);
-		    			}
-		    			
-		    			CheckBox ch = (CheckBox)v.findViewById(R.id.check_item);
-		    			if (ch != null) {
-		    				ch.setText("");
-		    				ch.setChecked(item.isChecked());
-		    				ch.setTag(item);
-		    				ch.setOnClickListener( new View.OnClickListener() {  
-		    					public void onClick(View v) {  
-		    						CheckBox cb = (CheckBox)v;  
-		    						CheckItem checkedItem = (CheckItem) cb.getTag();
-		    						if(checkedItem != null){
-		    							checkedItem.setChecked(cb.isChecked());
-		    						}
-		    						isChanged = true;
-		    					}
-		    				});  
-		    			}
-		    		}
-		    	}
-		    }
-			return v;
+			if (item instanceof SectionItem) {
+				((TextView)view.findViewById(R.id.title)).setText(((SectionItem)item).Title);
+			} else /* if (item instanceof CatalogItem) */ {
+				final CatalogItem catalogItem = (CatalogItem)item;
+
+				if (myCoverManager == null) {
+					view.measure(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+					final int coverHeight = view.getMeasuredHeight();
+					myCoverManager = new CoverManager(AllCatalogsActivity.this, coverHeight * 15 / 12, coverHeight);
+					view.requestLayout();
+				}
+
+				final INetworkLink link = catalogItem.Tree.getLink();
+				((TextView)view.findViewById(R.id.title)).setText(link.getTitle());
+				((TextView)view.findViewById(R.id.subtitle)).setText(link.getSummary());
+
+				final ImageView coverView = (ImageView)view.findViewById(R.id.icon);
+				if (!myCoverManager.trySetCoverImage(coverView, catalogItem.Tree)) {
+					coverView.setImageResource(R.drawable.ic_list_library_books);
+				}
+
+				final CheckBox checkBox = (CheckBox)view.findViewById(R.id.check_item);
+				checkBox.setChecked(catalogItem.IsChecked);
+				checkBox.setOnClickListener(new View.OnClickListener() {
+					public void onClick(View v) {
+						catalogItem.IsChecked = checkBox.isChecked();
+						myIsChanged = true;
+					}
+				});
+			}
+			return view;
 		}
 	}
 }

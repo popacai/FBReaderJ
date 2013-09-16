@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010-2013 Geometer Plus <contact@geometerplus.com>
+ * Copyright (C) 2007-2013 Geometer Plus <contact@geometerplus.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,14 +17,14 @@
  * 02110-1301, USA.
  */
 
-package org.geometerplus.fbreader.network.rss;
+package org.geometerplus.zlibrary.core.util;
 
-import org.geometerplus.zlibrary.core.xml.ZLStringMap;
-
-import org.geometerplus.fbreader.network.atom.ATOMCategory;
-
-public class RSSCategory extends ATOMCategory {
-	RSSCategory(ZLStringMap source){
-		super(source);
+public class RationalNumber {
+	public final long Numerator;
+	public final long Denominator;
+	
+	public RationalNumber(long numerator, long denominator) {
+		Numerator = numerator;
+		Denominator = denominator;
 	}
 }
