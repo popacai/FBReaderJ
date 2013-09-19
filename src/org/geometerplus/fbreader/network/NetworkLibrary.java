@@ -492,6 +492,7 @@ public class NetworkLibrary {
 		// we do add non-catalog items
 		new SearchCatalogTree(myRootTree, mySearchItem, 0);
 		new AddCustomCatalogItemTree(myRootTree);
+		new AllCatalogsItemTree(myRootTree);
 
 		fireModelChangedEvent(ChangeListener.Code.SomeCode);
 	}
