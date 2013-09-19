@@ -102,7 +102,6 @@ public class AllCatalogsActivity extends ListActivity {
                     		myAdapter.insert(item, to);
                     		myAdapter.reCheckAll(item, to);
                     		list.moveCheckState(from, to);
-				System.out.println("INSERT OT: "+to);
 				setResultIds(item, to);
 			}
 		    }
@@ -187,11 +186,11 @@ public class AllCatalogsActivity extends ListActivity {
 		if(item != null && item instanceof CatalogItem){
 			CatalogItem catalogItem = (CatalogItem)item;
 			if(catalogItem.IsChecked){
-				int insertIndex = index <=0 ?0:(index-1);
+				int insertIndex = index <= 0 ? -1 : (index-1);
 				if(mySelectedItems.contains(catalogItem)){
 					mySelectedItems.remove(catalogItem);
 				}
-				if(insertIndex > 0){
+				if(insertIndex >= 0){
 					mySelectedItems.add(insertIndex, catalogItem);
 				}else{
 					mySelectedItems.add(catalogItem);
@@ -221,7 +220,6 @@ public class AllCatalogsActivity extends ListActivity {
 		}
                 
                 public void reCheckAll(Item item, int index){
-			System.out.println(" --> "+index);
                        boolean flag = false;
                        for (int i=0; i < getCount(); i++){
                            Item it = getItem(i);
