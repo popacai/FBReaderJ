@@ -36,7 +36,7 @@ import org.geometerplus.android.fbreader.FBReader;
 import com.mobeta.android.dslv.DragSortListView;
 import com.mobeta.android.dslv.DragSortListView.RemoveListener;
 	
-public class AllCatalogsActivity extends ListActivity {
+public class CatalogManagerActivity extends ListActivity {
 	private ArrayList<Item> myAllItems = new ArrayList<Item>();
 	private ArrayList<Item> mySelectedItems = new ArrayList<Item>();
 	ArrayList<String> myIds = new ArrayList<String>();
@@ -49,7 +49,8 @@ public class AllCatalogsActivity extends ListActivity {
 	protected void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
 		setContentView(R.layout.network_library_filter);
-		Intent intent = getIntent();
+
+		final Intent intent = getIntent();
 		myIds = intent.getStringArrayListExtra(FBReader.CATALOGS_ID_LIST);
 		myInactiveIds = intent.getStringArrayListExtra(INACTIVE_IDS_LIST);
 	}
@@ -153,7 +154,7 @@ public class AllCatalogsActivity extends ListActivity {
 		private final String Title;
 
 		public SectionItem(String key) {
-			Title = NetworkLibrary.resource().getResource("allCatalogs").getResource(key).getValue();
+			Title = NetworkLibrary.resource().getResource("manageCatalogs").getResource(key).getValue();
 		}
 	}
 
@@ -216,7 +217,7 @@ public class AllCatalogsActivity extends ListActivity {
 		private CoverManager myCoverManager;
 
 		public CatalogsListAdapter() {
-			super(AllCatalogsActivity.this, R.layout.checkbox_item, myAllItems);
+			super(CatalogManagerActivity.this, R.layout.checkbox_item, myAllItems);
 		}
                 
                 public void reCheckAll(Item item, int index){
@@ -270,7 +271,7 @@ public class AllCatalogsActivity extends ListActivity {
 				if (myCoverManager == null) {
 					view.measure(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 					final int coverHeight = view.getMeasuredHeight();
-					myCoverManager = new CoverManager(AllCatalogsActivity.this, coverHeight * 15 / 32, coverHeight);
+					myCoverManager = new CoverManager(CatalogManagerActivity.this, coverHeight * 15 / 32, coverHeight);
 					view.requestLayout();
 				}
 

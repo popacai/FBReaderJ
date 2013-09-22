@@ -26,20 +26,20 @@ import android.app.Activity;
 import android.content.Intent;
 
 import org.geometerplus.fbreader.network.tree.RootTree;
-import org.geometerplus.fbreader.network.tree.AllCatalogsItemTree;
+import org.geometerplus.fbreader.network.tree.ManageCatalogsItemTree;
 import org.geometerplus.fbreader.network.NetworkTree;
 import org.geometerplus.fbreader.network.NetworkLibrary;
 import org.geometerplus.android.fbreader.OrientationUtil;
-import org.geometerplus.android.fbreader.network.AllCatalogsActivity;
+import org.geometerplus.android.fbreader.network.CatalogManagerActivity;
 import org.geometerplus.android.fbreader.FBReader;
 
-public class AllCatalogsAction extends RootAction {
-	public AllCatalogsAction(Activity activity) {
-		super(activity, ActionCode.SHOW_CATALOGS_FILTER, "allCatalogs", true);
+public class ManageCatalogsAction extends RootAction {
+	public ManageCatalogsAction(Activity activity) {
+		super(activity, ActionCode.MANAGE_CATALOGS, "manageCatalogs", true);
 	}
 	@Override
 	public boolean isVisible(NetworkTree tree) {
-		return tree instanceof RootTree || tree instanceof AllCatalogsItemTree;
+		return tree instanceof RootTree || tree instanceof ManageCatalogsItemTree;
 	}
 	@Override
 	public void run(NetworkTree tree) {
@@ -50,9 +50,9 @@ public class AllCatalogsAction extends RootAction {
 
 		OrientationUtil.startActivityForResult(
 			myActivity,
-			new Intent(myActivity.getApplicationContext(), AllCatalogsActivity.class)
+			new Intent(myActivity.getApplicationContext(), CatalogManagerActivity.class)
 			  .putStringArrayListExtra(FBReader.CATALOGS_ID_LIST, ids)
-			  .putStringArrayListExtra(AllCatalogsActivity.INACTIVE_IDS_LIST, inactiveIds),
+			  .putStringArrayListExtra(CatalogManagerActivity.INACTIVE_IDS_LIST, inactiveIds),
 			  FBReader.REQUEST_ALL_CATALOGS
 		);
 	}

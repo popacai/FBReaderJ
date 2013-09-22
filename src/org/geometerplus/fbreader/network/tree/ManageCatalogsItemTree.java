@@ -17,26 +17,27 @@
  * 02110-1301, USA.
  */
 
-package org.geometerplus.android.fbreader;
+package org.geometerplus.fbreader.network.tree;
 
-public class PackageInfo {
-	public final String Id;
-	public final String PackageName;
-	public final String ClassName;
-	public final String Title;
+import org.geometerplus.fbreader.network.*;
 
-	public final String IntentAction;
-	public final String IntentKey;
-	public final String IntentDataPattern;
+public class ManageCatalogsItemTree extends NetworkTree {
+	public ManageCatalogsItemTree(NetworkTree parent) {
+		super(parent);
+	}
 
-	PackageInfo(String id, String packageName, String className, String title, String intentAction, String intentKey, String intentDataPattern) {
-		Id = id;
-		PackageName = packageName;
-		ClassName = className;
-		Title = title;
+	@Override
+	public String getName() {
+		return NetworkLibrary.resource().getResource("manageCatalogs").getValue();
+	}
 
-		IntentAction = intentAction;
-		IntentKey = intentKey;
-		IntentDataPattern = intentDataPattern;
+	@Override
+	public String getSummary() {
+		return NetworkLibrary.resource().getResource("manageCatalogs").getResource("summary").getValue();
+	}
+
+	@Override
+	protected String getStringId() {
+		return "@ManageCatalogs";
 	}
 }
