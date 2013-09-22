@@ -61,7 +61,7 @@ public class CatalogManagerActivity extends ListActivity {
 
 		myAllItems.clear();
 		if (myIds.size() > 0) {
-			myAllItems.add(new SectionItem("active"));
+			myAllItems.add(new SectionItem("enabled"));
 			final List<CatalogItem> cItems = new ArrayList<CatalogItem>();
 			for (String id : myIds) {
 				cItems.add(new CatalogItem(id, true, NetworkLibrary.Instance().getCatalogTreeByUrlAll(id)));
@@ -71,7 +71,7 @@ public class CatalogManagerActivity extends ListActivity {
 		}
 
 		if (myInactiveIds.size() > 0) {
-			myAllItems.add(new SectionItem("inactive"));
+			myAllItems.add(new SectionItem("disabled"));
 			final List<CatalogItem> cItems = new ArrayList<CatalogItem>();
 			for (String id : myInactiveIds) {
 				cItems.add(new CatalogItem(id, false, NetworkLibrary.Instance().getCatalogTreeByUrlAll(id)));
@@ -271,7 +271,7 @@ public class CatalogManagerActivity extends ListActivity {
 				if (myCoverManager == null) {
 					view.measure(ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 					final int coverHeight = view.getMeasuredHeight();
-					myCoverManager = new CoverManager(CatalogManagerActivity.this, coverHeight * 15 / 32, coverHeight);
+					myCoverManager = new CoverManager(CatalogManagerActivity.this, coverHeight * 15 / 22, coverHeight);
 					view.requestLayout();
 				}
 
