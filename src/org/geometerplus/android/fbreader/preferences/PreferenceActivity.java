@@ -20,13 +20,14 @@
 package org.geometerplus.android.fbreader.preferences;
 
 import java.text.DecimalFormatSymbols;
-import java.util.Locale;
+import java.util.*;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.view.KeyEvent;
 
 import org.geometerplus.zlibrary.core.application.ZLKeyBindings;
+import org.geometerplus.zlibrary.core.language.Language;
 import org.geometerplus.zlibrary.core.options.*;
 import org.geometerplus.zlibrary.core.resources.ZLResource;
 
@@ -92,7 +93,7 @@ public class PreferenceActivity extends ZLPreferenceActivity {
 
 		final Screen appearanceScreen = createPreferenceScreen("appearance");
 		appearanceScreen.addPreference(new LanguagePreference(
-			this, appearanceScreen.Resource, "language", ZLResource.languages()
+			this, appearanceScreen.Resource, "language", ZLResource.interfaceLanguages()
 		) {
 			@Override
 			protected void init() {
@@ -148,7 +149,7 @@ public class PreferenceActivity extends ZLPreferenceActivity {
 			appearanceScreen.Resource,
 			"dontTurnScreenOffDuringCharging"
 		));
-		*/
+		 */
 		appearanceScreen.addOption(androidLibrary.ShowStatusBarOption, "showStatusBar");
 		appearanceScreen.addOption(androidLibrary.DisableButtonLightsOption, "disableButtonLights");
 
@@ -229,8 +230,8 @@ public class PreferenceActivity extends ZLPreferenceActivity {
 				continue;
 			}
 			ZLTextFullStyleDecoration fullDecoration =
-				decoration instanceof ZLTextFullStyleDecoration ?
-					(ZLTextFullStyleDecoration)decoration : null;
+				decoration instanceof ZLTextFullStyleDecoration
+					? (ZLTextFullStyleDecoration)decoration : null;
 
 			final Screen formatScreen = moreStylesScreen.createPreferenceScreen(decoration.getName());
 			formatScreen.addPreference(new FontOption(
@@ -329,7 +330,7 @@ public class PreferenceActivity extends ZLPreferenceActivity {
 		bgPreferences.setEnabled("".equals(profile.WallpaperOption.getValue()));
 		/*
 		colorsScreen.addOption(profile.SelectionBackgroundOption, "selectionBackground");
-		*/
+		 */
 		colorsScreen.addOption(profile.HighlightingOption, "highlighting");
 		colorsScreen.addOption(profile.RegularTextOption, "text");
 		colorsScreen.addOption(profile.HyperlinkTextOption, "hyperlink");
@@ -404,7 +405,7 @@ public class PreferenceActivity extends ZLPreferenceActivity {
 				this, fbreader, colorProfileScreen, key, ColorProfilePreference.createTitle(resource, key)
 			));
 		}
-		*/
+		 */
 
 		final PageTurningOptions pageTurningOptions = fbReader.PageTurningOptions;
 
@@ -468,6 +469,30 @@ public class PreferenceActivity extends ZLPreferenceActivity {
 		scrollingScreen.addOption(pageTurningOptions.Horizontal, "horizontal");
 
 		final Screen dictionaryScreen = createPreferenceScreen("dictionary");
+
+		final List<String> langCodes = ZLResource.languageCodes();
+		final ArrayList<Language> languages = new ArrayList<Language>(langCodes.size() + 1);
+		for (String code : langCodes) {
+			languages.add(new Language(code));
+		}
+		Collections.sort(languages);
+		languages.add(0, new Language(
+			Language.ANY_CODE, dictionaryScreen.Resource.getResource("targetLanguage")
+		));
+		final LanguagePreference targetLanguagePreference = new LanguagePreference(
+			this, dictionaryScreen.Resource, "targetLanguage", languages
+		) {
+			@Override
+			protected void init() {
+				setInitialValue(DictionaryUtil.TargetLanguageOption.getValue());
+			}
+
+			@Override
+			protected void setLanguage(String code) {
+				DictionaryUtil.TargetLanguageOption.setValue(code);
+			}
+		};
+
 		try {
 			dictionaryScreen.addPreference(new DictionaryPreference(
 				this,
@@ -475,7 +500,15 @@ public class PreferenceActivity extends ZLPreferenceActivity {
 				"dictionary",
 				DictionaryUtil.singleWordTranslatorOption(),
 				DictionaryUtil.dictionaryInfos(this, true)
-			));
+			) {
+				@Override
+				protected void onDialogClosed(boolean result) {
+					super.onDialogClosed(result);
+					targetLanguagePreference.setEnabled(
+						DictionaryUtil.getCurrentDictionaryInfo(true).SupportsTargetLanguageSetting
+					);
+				}
+			});
 			dictionaryScreen.addPreference(new DictionaryPreference(
 				this,
 				dictionaryScreen.Resource,
@@ -493,6 +526,10 @@ public class PreferenceActivity extends ZLPreferenceActivity {
 			"navigateOverAllWords"
 		));
 		dictionaryScreen.addOption(fbReader.WordTappingActionOption, "tappingAction");
+		dictionaryScreen.addPreference(targetLanguagePreference);
+		targetLanguagePreference.setEnabled(
+			DictionaryUtil.getCurrentDictionaryInfo(true).SupportsTargetLanguageSetting
+		);
 
 		final Screen imagesScreen = createPreferenceScreen("images");
 		imagesScreen.addOption(fbReader.ImageTappingActionOption, "tappingAction");
