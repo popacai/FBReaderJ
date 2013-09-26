@@ -477,7 +477,7 @@ public class Book extends TitledEntity {
 					database.saveBookUid(myId, uid);
 				}
 				if (null != myProgress) {
-					database.savePosition(myId, myProgress);
+					database.saveProgress(myId, myProgress);
 				}
 			}
 		});
