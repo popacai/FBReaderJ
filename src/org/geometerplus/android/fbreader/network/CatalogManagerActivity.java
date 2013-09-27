@@ -30,8 +30,8 @@ import android.widget.*;
 
 import org.geometerplus.zlibrary.ui.android.R;
 import org.geometerplus.fbreader.network.*;
-import org.geometerplus.android.fbreader.covers.CoverManager;
 import org.geometerplus.android.fbreader.FBReader;
+import org.geometerplus.android.fbreader.covers.CoverManager;
 
 import com.mobeta.android.dslv.DragSortListView;
 import com.mobeta.android.dslv.DragSortListView.RemoveListener;
@@ -50,7 +50,7 @@ public class CatalogManagerActivity extends ListActivity {
 		setContentView(R.layout.network_library_filter);
 
 		final Intent intent = getIntent();
-		myIds = intent.getStringArrayListExtra(FBReader.CATALOGS_ID_LIST);
+		myIds = intent.getStringArrayListExtra(NetworkLibraryActivity.CATALOG_IDS_KEY);
 		myInactiveIds = intent.getStringArrayListExtra(INACTIVE_IDS_LIST);
 	}
 
@@ -210,7 +210,7 @@ public class CatalogManagerActivity extends ListActivity {
 					}
 				}
 			}
-			setResult(RESULT_OK, new Intent().putStringArrayListExtra(FBReader.CATALOGS_ID_LIST, ids));
+			setResult(RESULT_OK, new Intent().putStringArrayListExtra(NetworkLibraryActivity.CATALOG_IDS_KEY, ids));
 		}
 	}
 
