@@ -152,6 +152,7 @@ public class Book extends TitledEntity {
 		mySeriesInfo = database.getSeriesInfo(myId);
 		myUids = database.listUids(myId);
 		HasBookmark = database.hasVisibleBookmark(myId);
+		myProgress = database.loadProgress(myId);
 		myIsSaved = true;
 		if (myUids == null || myUids.isEmpty()) {
 			try {
@@ -284,6 +285,7 @@ public class Book extends TitledEntity {
 	
 	public void setProgress(RationalNumber progress) {
 		myProgress = progress;
+		myIsSaved = false;
 	}
 	
 	public String getEncoding() {

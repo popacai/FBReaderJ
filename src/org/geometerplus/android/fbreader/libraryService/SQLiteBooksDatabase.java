@@ -157,7 +157,6 @@ final class SQLiteBooksDatabase extends BooksDatabase {
 			);
 		}
 		cursor.close();
-		book.setProgress(loadProgress(book.getId()));
 		return book;
 	}
 
