@@ -39,30 +39,21 @@ import com.mobeta.android.dslv.DragSortListView.RemoveListener;
 public class CatalogManagerActivity extends ListActivity {
 	private final List<Item> myAllItems = new ArrayList<Item>();
 	private final List<Item> mySelectedItems = new ArrayList<Item>();
-	private List<String> myIds = new ArrayList<String>();
-	private List<String> myInactiveIds = new ArrayList<String>();
-
-	public final static String INACTIVE_IDS_LIST = "org.geometerplus.android.fbreader.network.INACTIVE_IDS_LIST";
-
-	@Override
-	protected void onCreate(Bundle icicle) {
-		super.onCreate(icicle);
-		setContentView(R.layout.network_library_filter);
-
-		final Intent intent = getIntent();
-		myIds = intent.getStringArrayListExtra(NetworkLibraryActivity.CATALOG_IDS_KEY);
-		myInactiveIds = intent.getStringArrayListExtra(INACTIVE_IDS_LIST);
-	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
 
 		myAllItems.clear();
-		if (myIds.size() > 0) {
-			myAllItems.add(new SectionItem("enabled"));
+
+		final Intent intent = getIntent();
+
+		myAllItems.add(new SectionItem("enabled"));
+		final List<String> enabledIds =
+			intent.getStringArrayListExtra(NetworkLibraryActivity.ENABLED_CATALOG_IDS_KEY);
+		if (enabledIds.size() > 0) {
 			final List<CatalogItem> cItems = new ArrayList<CatalogItem>();
-			for (String id : myIds) {
+			for (String id : enabledIds) {
 				final NetworkTree tree = NetworkLibrary.Instance().getCatalogTreeByUrlAll(id);
 				if (tree != null) {
 					cItems.add(new CatalogItem(id, true, tree));
@@ -72,67 +63,69 @@ public class CatalogManagerActivity extends ListActivity {
 			mySelectedItems.addAll(cItems);
 		}
 
-		if (myInactiveIds.size() > 0) {
-			myAllItems.add(new SectionItem("disabled"));
+		myAllItems.add(new SectionItem("disabled"));
+		final List<String> disabledIds =
+			intent.getStringArrayListExtra(NetworkLibraryActivity.DISABLED_CATALOG_IDS_KEY);
+		if (disabledIds.size() > 0) {
 			final List<CatalogItem> cItems = new ArrayList<CatalogItem>();
-			for (String id : myInactiveIds) {
+			for (String id : disabledIds) {
 				cItems.add(new CatalogItem(id, false, NetworkLibrary.Instance().getCatalogTreeByUrlAll(id)));
 			}
 			myAllItems.addAll(cItems);
 		}
 
-                DragSortListView list = getListView();
+		DragSortListView list = getListView();
 		list.setAdapter(new CatalogsListAdapter());
-                list.setDropListener(onDrop);
-                list.setRemoveListener(onRemove);
+		list.setDropListener(onDrop);
+		list.setRemoveListener(onRemove);
 		//setListAdapter(new CatalogsListAdapter());
 	}
 
 	private DragSortListView.DropListener onDrop =
-        new DragSortListView.DropListener() {
-            @Override
-            public void drop(int from, int to) {
-                if (from != to) {
-                    if(to <= 0){
-                        to = 1;
-                    }
-                    DragSortListView list = getListView();
-		    if(list.getInputAdapter() instanceof CatalogsListAdapter){
-                    	CatalogsListAdapter myAdapter = (CatalogsListAdapter)list.getInputAdapter();
-                    	Item item = myAdapter.getItem(from);
+		new DragSortListView.DropListener() {
+			@Override
+			public void drop(int from, int to) {
+				if (from != to) {
+					if(to <= 0){
+						to = 1;
+					}
+					DragSortListView list = getListView();
+			if(list.getInputAdapter() instanceof CatalogsListAdapter){
+						CatalogsListAdapter myAdapter = (CatalogsListAdapter)list.getInputAdapter();
+						Item item = myAdapter.getItem(from);
 			if(item instanceof CatalogItem){
 				myAdapter.remove(item);
-                    		myAdapter.insert(item, to);
-                    		myAdapter.reCheckAll(item, to);
-                    		list.moveCheckState(from, to);
+							myAdapter.insert(item, to);
+							myAdapter.reCheckAll(item, to);
+							list.moveCheckState(from, to);
 				setResultIds(item, to);
 			}
-		    }
-                }
-            }
-        };
+			}
+				}
+			}
+		};
 
-    private RemoveListener onRemove =
-        new DragSortListView.RemoveListener() {
-            @Override
-            public void remove(int which) {
-                DragSortListView list = getListView();
+	private RemoveListener onRemove =
+		new DragSortListView.RemoveListener() {
+			@Override
+			public void remove(int which) {
+				DragSortListView list = getListView();
 		if(list.getInputAdapter() instanceof CatalogsListAdapter){
-                	CatalogsListAdapter myAdapter = (CatalogsListAdapter)list.getInputAdapter();
-                	Item item = myAdapter.getItem(which);
+					CatalogsListAdapter myAdapter = (CatalogsListAdapter)list.getInputAdapter();
+					Item item = myAdapter.getItem(which);
 			if(item instanceof CatalogItem){
-                		myAdapter.remove(item);
-                		list.removeCheckState(which);
+						myAdapter.remove(item);
+						list.removeCheckState(which);
 			}
 		}
-            }
-        };
+			}
+		};
 
 
-        @Override
-        public DragSortListView getListView() {
-               return (DragSortListView) super.getListView();
-        }
+		@Override
+		public DragSortListView getListView() {
+			   return (DragSortListView) super.getListView();
+		}
 
 	@Override
 	protected void onResume() {
@@ -210,7 +203,7 @@ public class CatalogManagerActivity extends ListActivity {
 					}
 				}
 			}
-			setResult(RESULT_OK, new Intent().putStringArrayListExtra(NetworkLibraryActivity.CATALOG_IDS_KEY, ids));
+			setResult(RESULT_OK, new Intent().putStringArrayListExtra(NetworkLibraryActivity.ENABLED_CATALOG_IDS_KEY, ids));
 		}
 	}
 
@@ -220,33 +213,33 @@ public class CatalogManagerActivity extends ListActivity {
 		public CatalogsListAdapter() {
 			super(CatalogManagerActivity.this, R.layout.catalog_manager_item, myAllItems);
 		}
-                
-                public void reCheckAll(Item item, int index){
-                       boolean flag = false;
-                       for (int i=0; i < getCount(); i++){
-                           Item it = getItem(i);
-                           if(it instanceof SectionItem){
-                               if(i>0){
-                                  if(index > i){
-                                     flag = false;
-                                  }else{
-                                     flag = true;
-                                  }
-                                  break;
-                               }else{
+				
+				public void reCheckAll(Item item, int index){
+					   boolean flag = false;
+					   for (int i=0; i < getCount(); i++){
+						   Item it = getItem(i);
+						   if(it instanceof SectionItem){
+							   if(i>0){
+								  if(index > i){
+									 flag = false;
+								  }else{
+									 flag = true;
+								  }
+								  break;
+							   }else{
 					flag = true;
-			       }
-                           }
-                       }
-                        
-                       if(item != null && item instanceof CatalogItem){
+				   }
+						   }
+					   }
+						
+					   if(item != null && item instanceof CatalogItem){
 				final CatalogItem catalogItem = (CatalogItem)item;
 				System.out.println(catalogItem.IsChecked+" == "+flag);
-                          	if(catalogItem.IsChecked != flag){
+						  	if(catalogItem.IsChecked != flag){
 					catalogItem.IsChecked = flag;
-                           	}
-                       } 
-                }
+						   	}
+					   } 
+				}
 
 		@Override
 		public View getView(int position, View convertView, final ViewGroup parent) {

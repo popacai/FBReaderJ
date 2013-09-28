@@ -51,8 +51,8 @@ public class ManageCatalogsAction extends RootAction {
 		OrientationUtil.startActivityForResult(
 			myActivity,
 			new Intent(myActivity.getApplicationContext(), CatalogManagerActivity.class)
-			  .putStringArrayListExtra(NetworkLibraryActivity.CATALOG_IDS_KEY, ids)
-			  .putStringArrayListExtra(CatalogManagerActivity.INACTIVE_IDS_LIST, inactiveIds),
+			  .putStringArrayListExtra(NetworkLibraryActivity.ENABLED_CATALOG_IDS_KEY, ids)
+			  .putStringArrayListExtra(NetworkLibraryActivity.DISABLED_CATALOG_IDS_KEY, inactiveIds),
 			  NetworkLibraryActivity.REQUEST_MANAGE_CATALOGS
 		);
 	}
