@@ -127,21 +127,6 @@ public class CatalogManagerActivity extends ListActivity {
 			   return (DragSortListView) super.getListView();
 		}
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-	}
-
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-	}
-
-	@Override
-	protected void onStop() {
-		super.onStop();
-	}
-
 	private static interface Item {
 	}
 
