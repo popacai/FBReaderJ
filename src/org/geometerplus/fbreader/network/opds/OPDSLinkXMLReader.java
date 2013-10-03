@@ -141,9 +141,9 @@ class OPDSLinkXMLReader extends OPDSXMLReader implements OPDSConstants {
 			final String titleString = title.toString();
 			final String summaryString = summary != null ? summary.toString() : null;
 
-			final UrlInfoWithDate ud = infos.getInfo(UrlInfo.Type.Catalog);
+			final UrlInfo catalogInfo = infos.getInfo(UrlInfo.Type.Catalog);
 
-			if (!MimeType.APP_RSS_XML.weakEquals(ud.Mime)) {
+			if (!MimeType.APP_RSS_XML.weakEquals(catalogInfo.Mime)) {
 				final OPDSNetworkLink opdsLink = NetworkLinkCreator.createOPDSLink(
 					OPDSNetworkLink.INVALID_ID,
 					id,
