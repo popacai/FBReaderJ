@@ -189,7 +189,7 @@ public class RSSXMLReader<MetadataType extends RSSChannelMetadata,EntryType exte
 				break;
 			case GUID:
 				if (testTag(TAG_GUID, tag, ns, null)) {
-					if(myId != null){
+					if (myId != null) {
 						myId.Uri = bufferContent;
 						myItem.Id = myId;
 						myId = null;
@@ -208,11 +208,11 @@ public class RSSXMLReader<MetadataType extends RSSChannelMetadata,EntryType exte
 			case CATEGORY:
 				if (testTag(TAG_CATEGORY, tag, ns, null)) {
 					String[] tokens = bufferContent.split(", ");
-					for (String str : tokens){
+					for (String str : tokens) {
 						ZLStringMap source = new ZLStringMap();
 						source.put(RSSCategory.LABEL, str);
 						myCategory = new RSSCategory(source);
-						if(myCategory != null){
+						if (myCategory != null) {
 							myItem.Categories.push(myCategory);
 						}
 						myCategory = null;
@@ -234,14 +234,14 @@ public class RSSXMLReader<MetadataType extends RSSChannelMetadata,EntryType exte
 		return false;
 	}
 	
-	private void parseTitle(String bufferContent){
+	private void parseTitle(String bufferContent) {
 		String[] marks = {"~ by:", "By"};
 		boolean found = false;
 		
-		for(int i=0; i< marks.length; i++){
+		for (int i = 0; i < marks.length; i++) {
 			int foundIndex = bufferContent.indexOf(marks[i]);
-			if(foundIndex >= 0){
-				if(myAuthor != null){
+			if (foundIndex >= 0) {
+				if (myAuthor != null) {
 					String title = bufferContent.substring(0, foundIndex);
 					myItem.Title = title;
 					String authorName = bufferContent.substring(foundIndex+marks[i].length());
@@ -254,20 +254,20 @@ public class RSSXMLReader<MetadataType extends RSSChannelMetadata,EntryType exte
 			}
 		}
 		
-		if(!found){
+		if (!found) {
 			myItem.Title = bufferContent;
 		}
 	}
 	
-	private String makeFormat(String buffer){
+	private String makeFormat(String buffer) {
 		//TODO: maybe need to make the text more readable?
 		StringBuffer s1 = new StringBuffer(buffer);
 		int index;
 		String[] marks = {"Author:", "Price:", "Rating:"};
 		
-		for(int i=0; i< marks.length; i++){
+		for (int i = 0; i < marks.length; i++) {
 			index = s1.indexOf(marks[i]);
-			if(index >= 0){
+			if (index >= 0) {
 				s1.insert(index, "<br/>");
 			}
 		}
@@ -275,8 +275,8 @@ public class RSSXMLReader<MetadataType extends RSSChannelMetadata,EntryType exte
 		return s1.toString();
 	}
 	
-	public boolean testTag(String name, String tag, String ns, String nsName){
-		return (name == tag && ns == nsName) ? true : false;
+	public boolean testTag(String name, String tag, String ns, String nsName) {
+		return name == tag && ns == nsName;
 	}
 	
 	@Override

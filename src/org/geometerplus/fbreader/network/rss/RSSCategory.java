@@ -24,7 +24,7 @@ import org.geometerplus.zlibrary.core.xml.ZLStringMap;
 import org.geometerplus.fbreader.network.atom.ATOMCategory;
 
 public class RSSCategory extends ATOMCategory {
-	RSSCategory(ZLStringMap source){
+	RSSCategory(ZLStringMap source) {
 		super(source);
 	}
 }
