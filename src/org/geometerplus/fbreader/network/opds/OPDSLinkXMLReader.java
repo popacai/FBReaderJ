@@ -40,7 +40,6 @@ class OPDSLinkXMLReader extends OPDSXMLReader implements OPDSConstants {
 		private final LinkedList<URLRewritingRule> myUrlRewritingRules = new LinkedList<URLRewritingRule>();
 		private final HashMap<RelationAlias, String> myRelationAliases = new HashMap<RelationAlias, String>();
 		private final LinkedHashMap<String,String> myExtraData = new LinkedHashMap<String,String>();
-		private final NetworkLinkCreator linkCreator = new NetworkLinkCreator();
 
 		List<INetworkLink> links() {
 			return myLinks;
@@ -99,8 +98,7 @@ class OPDSLinkXMLReader extends OPDSXMLReader implements OPDSConstants {
 				} else if (rel == null) {
 					if (MimeType.APP_ATOM_XML.weakEquals(mime)) {
 						infos.addInfo(new UrlInfoWithDate(UrlInfo.Type.Catalog, href, mime));
-					}
-					if (MimeType.APP_RSS_XML.weakEquals(mime)) {
+					} else if (MimeType.APP_RSS_XML.weakEquals(mime)) {
 						infos.addInfo(new UrlInfoWithDate(UrlInfo.Type.Catalog, href, mime));
 					}
 				} else if (rel == "search") {
@@ -146,13 +144,15 @@ class OPDSLinkXMLReader extends OPDSXMLReader implements OPDSConstants {
 			UrlInfoWithDate ud = infos.getInfo(UrlInfo.Type.Catalog);
 
 			if (!MimeType.APP_RSS_XML.weakEquals(ud.Mime)) {
-				OPDSNetworkLink opdsLink = (OPDSNetworkLink)linkCreator.createOPDSLink(OPDSNetworkLink.INVALID_ID,
-						id,
-						siteName,
-						titleString,
-						summaryString,
-						language,
-						infos);
+				final OPDSNetworkLink opdsLink = NetworkLinkCreator.createOPDSLink(
+					OPDSNetworkLink.INVALID_ID,
+					id,
+					siteName,
+					titleString,
+					summaryString,
+					language,
+					infos
+				);
 				opdsLink.setRelationAliases(myRelationAliases);
 				opdsLink.setUrlRewritingRules(myUrlRewritingRules);
 				opdsLink.setExtraData(myExtraData);
@@ -166,12 +166,14 @@ class OPDSLinkXMLReader extends OPDSXMLReader implements OPDSConstants {
 				}
 				return opdsLink;
 			}else{
-				return linkCreator.createRSSLink(OPDSNetworkLink.INVALID_ID,
-						siteName,
-						titleString,
-						summaryString,
-						language,
-						infos);
+				return NetworkLinkCreator.createRSSLink(
+					OPDSNetworkLink.INVALID_ID,
+					siteName,
+					titleString,
+					summaryString,
+					language,
+					infos
+				);
 			}
 		}
 
