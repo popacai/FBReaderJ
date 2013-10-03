@@ -26,10 +26,10 @@ import org.geometerplus.zlibrary.core.util.MimeType;
 import org.geometerplus.zlibrary.core.xml.ZLStringMap;
 
 import org.geometerplus.fbreader.network.INetworkLink;
-import org.geometerplus.fbreader.network.NetworkLinkCreator;
 import org.geometerplus.fbreader.network.atom.ATOMLink;
 import org.geometerplus.fbreader.network.authentication.NetworkAuthenticationManager;
 import org.geometerplus.fbreader.network.authentication.litres.LitResAuthenticationManager;
+import org.geometerplus.fbreader.network.rss.RSSNetworkLink;
 import org.geometerplus.fbreader.network.urlInfo.*;
 
 class OPDSLinkXMLReader extends OPDSXMLReader implements OPDSConstants {
@@ -96,13 +96,13 @@ class OPDSLinkXMLReader extends OPDSXMLReader implements OPDSConstants {
 						infos.addInfo(new UrlInfoWithDate(UrlInfo.Type.Image, href, mime));
 					}
 				} else if (rel == null) {
-					if (MimeType.APP_ATOM_XML.weakEquals(mime)) {
-						infos.addInfo(new UrlInfoWithDate(UrlInfo.Type.Catalog, href, mime));
-					} else if (MimeType.APP_RSS_XML.weakEquals(mime)) {
+					if (MimeType.APP_ATOM_XML.weakEquals(mime)
+						|| MimeType.APP_RSS_XML.weakEquals(mime)) {
 						infos.addInfo(new UrlInfoWithDate(UrlInfo.Type.Catalog, href, mime));
 					}
 				} else if (rel == "search") {
-					if (MimeType.APP_ATOM_XML.weakEquals(mime) || MimeType.TEXT_HTML.weakEquals(mime)) {
+					if (MimeType.APP_ATOM_XML.weakEquals(mime)
+						|| MimeType.TEXT_HTML.weakEquals(mime)) {
 						final OpenSearchDescription descr = OpenSearchDescription.createDefault(href, mime);
 						if (descr.isValid()) {
 							// TODO: Why do we use '%s'? Use Description instead??? (this needs to rewrite SEARCH engine logic a little)
@@ -144,7 +144,7 @@ class OPDSLinkXMLReader extends OPDSXMLReader implements OPDSConstants {
 			final UrlInfo catalogInfo = infos.getInfo(UrlInfo.Type.Catalog);
 
 			if (MimeType.APP_ATOM_XML.weakEquals(catalogInfo.Mime)) {
-				final OPDSNetworkLink opdsLink = NetworkLinkCreator.createOPDSLink(
+				final OPDSNetworkLink opdsLink = new OPDSPredefinedNetworkLink(
 					OPDSNetworkLink.INVALID_ID,
 					id,
 					siteName,
@@ -153,6 +153,7 @@ class OPDSLinkXMLReader extends OPDSXMLReader implements OPDSConstants {
 					language,
 					infos
 				);
+
 				opdsLink.setRelationAliases(myRelationAliases);
 				opdsLink.setUrlRewritingRules(myUrlRewritingRules);
 				opdsLink.setExtraData(myExtraData);
@@ -166,7 +167,7 @@ class OPDSLinkXMLReader extends OPDSXMLReader implements OPDSConstants {
 				}
 				return opdsLink;
 			} else if (MimeType.APP_RSS_XML.weakEquals(catalogInfo.Mime)) {
-				return NetworkLinkCreator.createRSSLink(
+				return new RSSNetworkLink(
 					OPDSNetworkLink.INVALID_ID,
 					siteName,
 					titleString,
