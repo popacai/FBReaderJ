@@ -111,43 +111,43 @@ public class RSSXMLReader<MetadataType extends RSSChannelMetadata,EntryType exte
 				}
 				break;
 			case RSS:
-	            if (testTag(TAG_CHANNEL, tag, ns, null)) {
-	                myState = CHANNEL;
-	            }
-	            break;
+				if (testTag(TAG_CHANNEL, tag, ns, null)) {
+					myState = CHANNEL;
+				}
+				break;
 			case CHANNEL:
-	            if (testTag(TAG_TITLE, tag, ns, null)) {
-	                myState = C_TITLE;
-	            }
-	            if (testTag(TAG_LINK, tag, ns, null)) {                
-	                myState = C_LINK;
-	            }
-	            if (testTag(TAG_ITEM, tag, ns, null)) {
-	            	myItem = myFeedHandler.createEntry(attributes);
-	                myState = ITEM;
-	            }
-	            break;
-	        case ITEM:
-	            if (testTag(TAG_TITLE, tag, ns, null)) {
-	            	myAuthor = new RSSAuthor(attributes);
-	                myState = TITLE;
-	            }
-	            if (testTag(TAG_LINK, tag, ns, null)) {
-	                myState = LINK;
-	            }
-	            if (testTag(TAG_DESCRIPTION, tag, ns, null)) {
-	                myState = DESCRIPTION;
-	            }
-	            if (testTag(TAG_CATEGORY, tag, ns, null)) {
-	                myState = CATEGORY;
-	            }
-	            if (testTag(TAG_GUID, tag, ns, null)) {
-	            	myId = new ATOMId();
-	                myState = GUID;
-	            }
-	            if (testTag(TAG_PUBDATE, tag, ns, null)) {
-	                myState = PUBDATE;
-	            }
+				if (testTag(TAG_TITLE, tag, ns, null)) {
+					myState = C_TITLE;
+				}
+				if (testTag(TAG_LINK, tag, ns, null)) {				
+					myState = C_LINK;
+				}
+				if (testTag(TAG_ITEM, tag, ns, null)) {
+					myItem = myFeedHandler.createEntry(attributes);
+					myState = ITEM;
+				}
+				break;
+			case ITEM:
+				if (testTag(TAG_TITLE, tag, ns, null)) {
+					myAuthor = new RSSAuthor(attributes);
+					myState = TITLE;
+				}
+				if (testTag(TAG_LINK, tag, ns, null)) {
+					myState = LINK;
+				}
+				if (testTag(TAG_DESCRIPTION, tag, ns, null)) {
+					myState = DESCRIPTION;
+				}
+				if (testTag(TAG_CATEGORY, tag, ns, null)) {
+					myState = CATEGORY;
+				}
+				if (testTag(TAG_GUID, tag, ns, null)) {
+					myId = new ATOMId();
+					myState = GUID;
+				}
+				if (testTag(TAG_PUBDATE, tag, ns, null)) {
+					myState = PUBDATE;
+				}
 		}
 		return false;
 	}
@@ -172,7 +172,7 @@ public class RSSXMLReader<MetadataType extends RSSChannelMetadata,EntryType exte
 				}
 				break;
 			case C_LINK:
-				if (testTag(TAG_LINK, tag, ns, null)) {                
+				if (testTag(TAG_LINK, tag, ns, null)) {				
 					myState = CHANNEL;
 				}
 				break;
