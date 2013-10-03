@@ -143,7 +143,7 @@ class OPDSLinkXMLReader extends OPDSXMLReader implements OPDSConstants {
 
 			final UrlInfo catalogInfo = infos.getInfo(UrlInfo.Type.Catalog);
 
-			if (!MimeType.APP_RSS_XML.weakEquals(catalogInfo.Mime)) {
+			if (MimeType.APP_ATOM_XML.weakEquals(catalogInfo.Mime)) {
 				final OPDSNetworkLink opdsLink = NetworkLinkCreator.createOPDSLink(
 					OPDSNetworkLink.INVALID_ID,
 					id,
@@ -165,7 +165,7 @@ class OPDSLinkXMLReader extends OPDSXMLReader implements OPDSConstants {
 					);
 				}
 				return opdsLink;
-			} else {
+			} else if (MimeType.APP_RSS_XML.weakEquals(catalogInfo.Mime)) {
 				return NetworkLinkCreator.createRSSLink(
 					OPDSNetworkLink.INVALID_ID,
 					siteName,
@@ -174,6 +174,8 @@ class OPDSLinkXMLReader extends OPDSXMLReader implements OPDSConstants {
 					language,
 					infos
 				);
+			} else {
+				return null;
 			}
 		}
 
