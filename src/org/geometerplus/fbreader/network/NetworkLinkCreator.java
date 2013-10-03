@@ -19,16 +19,14 @@
 
 package org.geometerplus.fbreader.network;
 
+import org.geometerplus.fbreader.network.opds.OPDSNetworkLink;
 import org.geometerplus.fbreader.network.opds.OPDSPredefinedNetworkLink;
 import org.geometerplus.fbreader.network.rss.RSSNetworkLink;
 import org.geometerplus.fbreader.network.urlInfo.UrlInfoCollection;
 import org.geometerplus.fbreader.network.urlInfo.UrlInfoWithDate;
 
-public class NetworkLinkCreator {
-	public NetworkLinkCreator() {
-	}
-
-	public AbstractNetworkLink createOPDSLink(int id, String predifinedId, String siteName, CharSequence title, CharSequence summary, String language, UrlInfoCollection<UrlInfoWithDate> infos) {
+public abstract class NetworkLinkCreator {
+	public static OPDSNetworkLink createOPDSLink(int id, String predifinedId, String siteName, CharSequence title, CharSequence summary, String language, UrlInfoCollection<UrlInfoWithDate> infos) {
 		return new OPDSPredefinedNetworkLink(
 			id,
 			predifinedId,
@@ -40,7 +38,7 @@ public class NetworkLinkCreator {
 		);
 	}
 
-	public AbstractNetworkLink createRSSLink(int id, String siteName, CharSequence title, CharSequence summary, String language, UrlInfoCollection<UrlInfoWithDate> infos) {
+	public static RSSNetworkLink createRSSLink(int id, String siteName, CharSequence title, CharSequence summary, String language, UrlInfoCollection<UrlInfoWithDate> infos) {
 		return new RSSNetworkLink(
 			id,
 			siteName,
