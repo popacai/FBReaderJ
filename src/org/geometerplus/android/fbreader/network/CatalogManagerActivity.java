@@ -34,7 +34,6 @@ import org.geometerplus.android.fbreader.FBReader;
 import org.geometerplus.android.fbreader.covers.CoverManager;
 
 import com.mobeta.android.dslv.DragSortListView;
-import com.mobeta.android.dslv.DragSortListView.RemoveListener;
 	
 public class CatalogManagerActivity extends ListActivity {
 	private final List<Item> myAllItems = new ArrayList<Item>();
@@ -105,7 +104,7 @@ public class CatalogManagerActivity extends ListActivity {
 			}
 		};
 
-	private RemoveListener onRemove =
+	private DragSortListView.RemoveListener onRemove =
 		new DragSortListView.RemoveListener() {
 			@Override
 			public void remove(int which) {
