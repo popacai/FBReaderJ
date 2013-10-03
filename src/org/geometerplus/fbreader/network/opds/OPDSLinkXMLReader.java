@@ -101,7 +101,8 @@ class OPDSLinkXMLReader extends OPDSXMLReader implements OPDSConstants {
 						infos.addInfo(new UrlInfoWithDate(UrlInfo.Type.Catalog, href, mime));
 					}
 				} else if (rel == "search") {
-					if (MimeType.APP_ATOM_XML.weakEquals(mime) || MimeType.TEXT_HTML.weakEquals(mime)) {
+					if (MimeType.APP_ATOM_XML.weakEquals(mime)
+						|| MimeType.TEXT_HTML.weakEquals(mime)) {
 						final OpenSearchDescription descr = OpenSearchDescription.createDefault(href, mime);
 						if (descr.isValid()) {
 							// TODO: Why do we use '%s'? Use Description instead??? (this needs to rewrite SEARCH engine logic a little)
