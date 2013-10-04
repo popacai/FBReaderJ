@@ -89,7 +89,7 @@ public class Book extends TitledEntity {
 		myLabels = book.myLabels != null ? new ArrayList<String>(book.myLabels) : null;
 		mySeriesInfo = book.mySeriesInfo;
 		HasBookmark = book.HasBookmark;
-		myProgress = book.getProgress();
+		myProgress = book.myProgress;
 	}
 
 	public void reloadInfoFromFile() {
