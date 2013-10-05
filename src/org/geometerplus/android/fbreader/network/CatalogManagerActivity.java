@@ -54,7 +54,7 @@ public class CatalogManagerActivity extends ListActivity {
 			final List<CatalogItem> cItems = new ArrayList<CatalogItem>();
 			for (String id : enabledIds) {
 				final NetworkTree tree = NetworkLibrary.Instance().getCatalogTreeByUrlAll(id);
-				if (tree != null) {
+				if (tree != null && tree.getLink() != null) {
 					cItems.add(new CatalogItem(id, true, tree));
 				}
 			}
