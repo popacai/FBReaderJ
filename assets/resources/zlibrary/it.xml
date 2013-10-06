@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Italian zlibrary resources, by Vytek and Neoxx from AndDev.it Translate Team -->
 <resources>
+    <node name="articleTitle">
+        <node name="0" value="il " />
+        <node name="1" value="lo " />
+        <node name="2" value="la " />         
+		<node name="3" value="l " />
+        <node name="4" value="un " />
+        <node name="5" value="uno " />    
+		<node name="6" value="una " />
+        <node name="7" value="i " />
+        <node name="8" value="gli " />    
+		<node name="9" value="le " /> 
+
+    </node>
+	
 	<node name="dialog">
 		<node name="button">
 			<node name="ok" value="Ok"/>

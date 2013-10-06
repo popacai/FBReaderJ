@@ -6,6 +6,16 @@
 	07-30-2011: First complete release as per FBReader v. 1.1.9 (Antonio Trueba)
 -->
 <resources>
+    <node name="articleTitle">
+        <node name="0" value="el " />
+        <node name="1" value="la " />
+        <node name="2" value="los " />         
+		<node name="3" value="las " />
+        <node name="4" value="un " />
+        <node name="5" value="unos " />    
+		<node name="6" value="una " />
+        <node name="7" value="unas " />
+    </node>
 	<node name="dialog">
 		<node name="button">
 			<node name="ok" value="Aceptar"/>

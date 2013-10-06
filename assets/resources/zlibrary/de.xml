@@ -3,6 +3,22 @@
 <!-- Updated by Ingolf Kübler 2010/11/17 -->
 <!-- Updated by Ingolf Kübler 2011/06/26 -->
 <resources>
+    <node name="articleTitle">
+        <node name="0" value="das " />
+        <node name="1" value="des " />
+        <node name="2" value="dem " />         
+		<node name="3" value="the " />
+        <node name="4" value="die " />
+        <node name="5" value="der " />    
+		<node name="6" value="den " />
+        <node name="7" value="ein " />
+        <node name="8" value="eine " />    
+		<node name="9" value="einer " /> 
+		<node name="10" value="einem " /> 
+		<node name="11" value="einen " /> 
+		<node name="12" value="eines " /> 
+    </node>
+	
 	<node name="dialog">
 		<node name="button">
 			<node name="ok" value="OK"/>

@@ -5,7 +5,21 @@
     Current maintainer: Mathias Monnerville <mathias@monnerville.com>
 -->
 <resources>
+	<node name="articleTitle">
+				<node name="0" value="un "/>
+				<node name="1" value="une "/>
+				<node name="2" value="le "/>
+				<node name="3" value="la "/>
+				<node name="4" value="les "/>
+				<node name="5" value="du "/>
+				<node name="6" value="de "/>
+				<node name="7" value="des "/>
+				<node name="8" value="de la"/>
+				<node name="9" value="l "/>
+				<node name="10" value="de l "/>   
+	</node>
 	<node name="dialog">
+
 		<node name="button">
 			<node name="ok" value="Ok"/>
 			<node name="cancel" value="Annuler"/>

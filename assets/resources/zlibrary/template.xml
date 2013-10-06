@@ -1,0 +1,11 @@
+    <node name="articleTitle">
+        <node name="0" value="the " / >
+        <node name="1" value="a " / >
+        <node name="2" value="an " / >         
+		<node name="0" value="the " / >
+        <node name="1" value="a " / >
+        <node name="2" value="an " / >    
+		<node name="0" value="the " / >
+        <node name="1" value="a " / >
+        <node name="2" value="an " / >    
+    </node>

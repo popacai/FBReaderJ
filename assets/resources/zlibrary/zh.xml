@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Chinese zlibrary resources, by http://shucang.com/ -->
 <resources>
+    <node name="articleTitle">
+        <node name="0" value="？" />
+        <node name="1" value="那" />
+        <node name="2" value="这" />
+        <node name="3" value=" " />
+        <node name="4" value="！" />
+                    
+    </node>
 	<node name="dialog">
 		<node name="button">
 			<node name="ok" value="确定"/>
