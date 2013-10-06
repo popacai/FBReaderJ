@@ -34,7 +34,7 @@ class ShowBookmarksAction extends FBAndroidAction {
 
 	@Override
 	public boolean isVisible() {
-		return Reader.Model != null;
+		return Reader.isModelEmpty();
 	}
 
 	@Override
@@ -56,7 +56,7 @@ class ShowBookmarksAction extends FBAndroidAction {
 
 	private void startBookmarksActivity(Intent intent) {
 		intent.putExtra(
-			FBReader.BOOK_KEY, SerializerUtil.serialize(Reader.Model.Book)
+			FBReader.BOOK_KEY, SerializerUtil.serialize(Reader.getBook())
 		);
 		intent.putExtra(
 			FBReader.BOOKMARK_KEY, SerializerUtil.serialize(Reader.createBookmark(20, true))

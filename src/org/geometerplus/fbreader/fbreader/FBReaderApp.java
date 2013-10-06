@@ -104,7 +104,7 @@ public final class FBReaderApp extends ZLApplication {
 	public final FBView FootnoteView;
 	private String myFootnoteModelId;
 
-	public volatile BookModel Model;
+	private volatile BookModel Model;
 
 	private ZLTextPosition myJumpEndPosition;
 	private Date myJumpTimeStamp;
@@ -131,6 +131,8 @@ public final class FBReaderApp extends ZLApplication {
 					case Updated:
 						onBookUpdated(book);
 						break;
+				default:
+					break;
 				}
 			}
 
@@ -612,5 +614,24 @@ public final class FBReaderApp extends ZLApplication {
 			clearTextCaches();
 			getViewWidget().repaint();
 		}
+	}
+	
+	public Book getBook() {
+		if(Model == null) return null;
+		return Model.Book;
+	}
+	
+	public int paragraphsNumber() {
+		if(Model == null) return 0;
+		return Model.getTextModel().getParagraphsNumber();
+	}
+	
+	public TOCTree getTOCTree() {
+		if(Model == null) return null;
+		return Model.TOCTree;
+	}
+	
+	public boolean isModelEmpty() {
+		return Model == null;
 	}
 }

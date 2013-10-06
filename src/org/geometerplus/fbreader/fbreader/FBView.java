@@ -30,7 +30,6 @@ import org.geometerplus.zlibrary.core.filesystem.ZLResourceFile;
 import org.geometerplus.zlibrary.text.model.ZLTextModel;
 import org.geometerplus.zlibrary.text.view.*;
 
-import org.geometerplus.fbreader.bookmodel.BookModel;
 import org.geometerplus.fbreader.bookmodel.FBHyperlinkType;
 import org.geometerplus.fbreader.bookmodel.TOCTree;
 import org.geometerplus.fbreader.fbreader.options.PageTurningOptions;
@@ -416,7 +415,7 @@ public final class FBView extends ZLTextView {
 			case FBHyperlinkType.NONE:
 				return profile.RegularTextOption.getValue();
 			case FBHyperlinkType.INTERNAL:
-				return myReader.Collection.isHyperlinkVisited(myReader.Model.Book, hyperlink.Id)
+				return myReader.Collection.isHyperlinkVisited(myReader.getBook(), hyperlink.Id)
 					? profile.VisitedHyperlinkTextOption.getValue()
 					: profile.HyperlinkTextOption.getValue();
 			case FBHyperlinkType.EXTERNAL:
@@ -447,9 +446,9 @@ public final class FBView extends ZLTextView {
 		}
 
 		private final int MAX_TOC_MARKS_NUMBER = 100;
-		private synchronized void updateTOCMarks(BookModel model) {
+		private synchronized void updateTOCMarks(TOCTree tree) {
 			myTOCMarks = new ArrayList<TOCTree>();
-			TOCTree toc = model.TOCTree;
+			TOCTree toc = tree;
 			if (toc == null) {
 				return;
 			}
@@ -487,8 +486,11 @@ public final class FBView extends ZLTextView {
 			if (reader == null) {
 				return;
 			}
-			final BookModel model = reader.Model;
+			/*final BookModel model = reader.Model;
 			if (model == null) {
+				return;
+			}*/
+			if (reader.isModelEmpty()) {
 				return;
 			}
 
@@ -556,7 +558,7 @@ public final class FBView extends ZLTextView {
 
 			if (reader.FooterOptions.ShowTOCMarks.getValue()) {
 				if (myTOCMarks == null) {
-					updateTOCMarks(model);
+					updateTOCMarks(reader.getTOCTree());
 				}
 				final int fullLength = sizeOfFullText();
 				for (TOCTree tocItem : myTOCMarks) {

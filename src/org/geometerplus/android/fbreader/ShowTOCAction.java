@@ -29,7 +29,7 @@ class ShowTOCAction extends FBAndroidAction {
 	}
 
 	public boolean isVisible() {
-		return Reader.Model != null && Reader.Model.TOCTree.hasChildren();
+		return !Reader.isModelEmpty() && Reader.getTOCTree().hasChildren();
 	}
 
 	@Override

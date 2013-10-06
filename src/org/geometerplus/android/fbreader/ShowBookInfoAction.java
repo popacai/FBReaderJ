@@ -33,7 +33,7 @@ class ShowBookInfoAction extends FBAndroidAction {
 
 	@Override
 	public boolean isVisible() {
-		return Reader.Model != null;
+		return !Reader.isModelEmpty();
 	}
 
 	@Override
@@ -41,7 +41,7 @@ class ShowBookInfoAction extends FBAndroidAction {
 		OrientationUtil.startActivity(
 			BaseActivity,
 			new Intent(BaseActivity.getApplicationContext(), BookInfoActivity.class)
-				.putExtra(FBReader.BOOK_KEY, SerializerUtil.serialize(Reader.Model.Book))
+				.putExtra(FBReader.BOOK_KEY, SerializerUtil.serialize(Reader.getBook()))
 				.putExtra(BookInfoActivity.FROM_READING_MODE_KEY, true)
 		);
 	}

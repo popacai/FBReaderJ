@@ -45,7 +45,6 @@ import org.geometerplus.zlibrary.ui.android.view.AndroidFontUtil;
 import org.geometerplus.zlibrary.ui.android.view.ZLAndroidWidget;
 
 import org.geometerplus.fbreader.book.*;
-import org.geometerplus.fbreader.bookmodel.BookModel;
 import org.geometerplus.fbreader.fbreader.*;
 import org.geometerplus.fbreader.tips.TipsManager;
 
@@ -438,11 +437,9 @@ public final class FBReader extends Activity {
 
 		getCollection().bindToService(this, new Runnable() {
 			public void run() {
-				final BookModel model = myFBReaderApp.Model;
-				if (model == null || model.Book == null) {
-					return;
-				}
-				onPreferencesUpdate(myFBReaderApp.Collection.getBookById(model.Book.getId()));
+				Book tmpBook = myFBReaderApp.getBook();
+				if (tmpBook == null) return;
+				onPreferencesUpdate(myFBReaderApp.Collection.getBookById(tmpBook.getId()));
 			}
 		});
 	}

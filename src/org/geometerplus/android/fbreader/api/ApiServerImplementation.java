@@ -294,11 +294,11 @@ public class ApiServerImplementation extends ApiInterface.Stub implements Api, A
 	}
 
 	public String getBookLanguage() {
-		return getReader().Model.Book.getLanguage();
+		return getReader().getBook().getLanguage();
 	}
 
 	public String getBookTitle() {
-		return getReader().Model.Book.getTitle();
+		return getReader().getBook().getTitle();
 	}
 
 	public List<String> getBookTags() {
@@ -307,11 +307,11 @@ public class ApiServerImplementation extends ApiInterface.Stub implements Api, A
 	}
 
 	public String getBookFilePath() {
-		return getReader().Model.Book.File.getPath();
+		return getReader().getBook().File.getPath();
 	}
 
 	public String getBookHash() {
-		final UID uid = BookUtil.createSHA256Uid(getReader().Model.Book.File);
+		final UID uid = BookUtil.createSHA256Uid(getReader().getBook().File);
 		return uid != null ? uid.Id : null;
 	}
 
@@ -446,7 +446,7 @@ public class ApiServerImplementation extends ApiInterface.Stub implements Api, A
 	}
 
 	public int getParagraphsNumber() {
-		return getReader().Model.getTextModel().getParagraphsNumber();
+		return getReader().paragraphsNumber();
 	}
 
 	public int getParagraphElementsCount(int paragraphIndex) {
