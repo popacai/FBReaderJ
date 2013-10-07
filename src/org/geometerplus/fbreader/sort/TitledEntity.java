@@ -90,20 +90,13 @@ public abstract class TitledEntity {
 	};
 	
 	static {
-		/*
 		ARTICLES.put("en", EN_ARTICLES);
 		ARTICLES.put("fr", FR_ARTICLES);
 		ARTICLES.put("de", GE_ARTICLES);
 		ARTICLES.put("it", IT_ARTICLES);
-		*/
 		ARTICLES.put("es", SP_ARTICLES);
 	}
 
-	public static void putArticles (String location, String[] articles)
-	{
-		ARTICLES.put(location, articles);
-		return ;
-	}
 	private static String trim(String s, String language) {
 		if (s == null) {
 			return "";
