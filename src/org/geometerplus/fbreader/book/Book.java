@@ -359,7 +359,7 @@ public class Book extends TitledEntity {
 		}
 	}
 
-	public List<UID> uids() {
+	public Collection<UID> uids() {
 		return myUids != null ? Collections.unmodifiableList(myUids) : Collections.<UID>emptyList();
 	}
 

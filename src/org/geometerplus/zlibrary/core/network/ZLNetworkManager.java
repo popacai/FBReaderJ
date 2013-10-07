@@ -37,6 +37,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.*;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.conn.params.ConnRoutePNames;
 
 import org.geometerplus.zlibrary.core.util.MiscUtil;
 import org.geometerplus.zlibrary.core.util.ZLNetworkUtil;
@@ -44,8 +45,9 @@ import org.geometerplus.zlibrary.core.options.ZLStringOption;
 
 public class ZLNetworkManager {
 	private static ZLNetworkManager ourManager;
-
+	private HttpHost proxy = null;
 	public static ZLNetworkManager Instance() {
+		
 		if (ourManager == null) {
 			ourManager = new ZLNetworkManager();
 		}
@@ -215,7 +217,7 @@ public class ZLNetworkManager {
 
 	private final CookieStore myCookieStore = new CookieStore() {
 		private HashMap<Key,Cookie> myCookies;
-
+		
 		public synchronized void addCookie(Cookie cookie) {
 			if (myCookies == null) {
 				getCookies();
@@ -280,10 +282,25 @@ public class ZLNetworkManager {
 		perform(request, 30000, 15000);
 	}
 
+	
+	public void setProxy(String proxyURL, int proxyPort)
+	{
+		this.proxy = new HttpHost(proxyURL, proxyPort);
+		
+		return;
+	}
+	public void unsetProxy()
+	{
+		this.proxy = null;
+		
+	}
 	private void perform(ZLNetworkRequest request, int socketTimeout, int connectionTimeout) throws ZLNetworkException {
 		boolean success = false;
 		DefaultHttpClient httpClient = null;
 		HttpEntity entity = null;
+		
+		
+		
 		try {
 			final HttpContext httpContext = new BasicHttpContext();
 			httpContext.setAttribute(ClientContext.COOKIE_STORE, myCookieStore);
@@ -293,6 +310,10 @@ public class ZLNetworkManager {
 			HttpConnectionParams.setSoTimeout(params, socketTimeout);
 			HttpConnectionParams.setConnectionTimeout(params, connectionTimeout);
 			httpClient = new DefaultHttpClient(params);
+			
+			if (proxy != null)
+				httpClient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY,proxy);
+			
 			final HttpRequestBase httpRequest;
 			if (request.PostData != null) {
 				httpRequest = new HttpPost(request.URL);

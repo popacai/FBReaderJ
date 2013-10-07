@@ -18,13 +18,15 @@
  */
 
 package org.geometerplus.zlibrary.core.resources;
-
+import android.util.Log;
 import java.util.*;
 
 import org.geometerplus.zlibrary.core.filesystem.ZLFile;
 import org.geometerplus.zlibrary.core.filesystem.ZLResourceFile;
 import org.geometerplus.zlibrary.core.language.Language;
 import org.geometerplus.zlibrary.core.options.ZLStringOption;
+
+import android.R;
 
 abstract public class ZLResource {
 	public final String Name;
@@ -39,7 +41,8 @@ abstract public class ZLResource {
 					final String name = file.getShortName();
 					final String postfix = ".xml";
 					if (name.endsWith(postfix)) {
-						ourLanguageCodes.add(name.substring(0, name.length() - postfix.length()));
+						ourLanguageCodes.add("123");
+					//	ourLanguageCodes.add(name.substring(0, name.length() - postfix.length()));
 					}
 				}
 			}
@@ -55,6 +58,18 @@ abstract public class ZLResource {
 		}
 		Collections.sort(allLanguages);
 		allLanguages.add(0, new Language(Language.SYSTEM_CODE));
+		
+		final ZLResource resourceArticles = ZLResource.resource("articlesTitle");
+		
+		//System.err.print("resourceArticles");
+		
+		ZLResource token = resourceArticles.getResource("1");
+		String print_words = token.getValue();
+		Log.e("FBReaderJ", print_words);
+		
+		Log.e("FBReaderJ", "resources111\n");
+		Log.e("FBReader", "resources112\n");
+		//Log.w("FBReaderJ","resourceArticles\n");
 		return allLanguages;
 	}
 

@@ -19,10 +19,12 @@
 
 package org.geometerplus.fbreader.sort;
 
+import android.content.res.AssetManager;
+
 import java.text.Normalizer;
 import java.util.HashMap;
 import java.util.Map;
-
+import java.io.InputStream;
 import android.annotation.TargetApi;
 import android.os.Build;
 
@@ -90,13 +92,25 @@ public abstract class TitledEntity {
 	};
 	
 	static {
+		
+		
+		
+		//InputStream is = AssetManager.open("filename");  
+		/*
 		ARTICLES.put("en", EN_ARTICLES);
 		ARTICLES.put("fr", FR_ARTICLES);
 		ARTICLES.put("de", GE_ARTICLES);
 		ARTICLES.put("it", IT_ARTICLES);
-		ARTICLES.put("es", SP_ARTICLES);
+		*/
+		
+		
 	}
 
+	public static void putArticles (String location, String[] articles)
+	{
+		ARTICLES.put(location, articles);
+		return ;
+	}
 	private static String trim(String s, String language) {
 		if (s == null) {
 			return "";
