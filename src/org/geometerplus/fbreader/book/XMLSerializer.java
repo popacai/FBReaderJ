@@ -48,6 +48,21 @@ class XMLSerializer extends AbstractSerializer {
 	}
 
 	private void serialize(StringBuilder buffer, Filter filter) {
+		
+		//Append the start tag for this item
+		appendTag(buffer, filter.getTag(), filter.isSingleTag(), filter.getAttributes());
+		
+		//Handle any additional tag information
+		if(!filter.isSingleTag()) {
+			//TODO: Is this the only case? If so we might be able to remove hasChildren()
+			if(filter.hasChildren()) {
+				serialize(buffer, filter.getFirst());
+				serialize(buffer, filter.getSecond());
+			}
+			
+			closeTag(buffer, filter.getTag());
+		}
+		/*
 		if (filter instanceof Filter.Empty) {
 			appendTag(buffer, "filter", true,
 				"type", "empty"
@@ -111,6 +126,7 @@ class XMLSerializer extends AbstractSerializer {
 		} else {
 			throw new RuntimeException("Unsupported filter type: " + filter.getClass());
 		}
+		*/
 	}
 
 	@Override
