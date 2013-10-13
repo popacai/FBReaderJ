@@ -19,6 +19,9 @@
 
 package org.geometerplus.fbreader.formats;
 
+import org.geometerplus.fbreader.book.Book;
+import org.geometerplus.fbreader.bookmodel.BookReadingException;
+
 public abstract class JavaFormatPlugin extends FormatPlugin {
 	protected JavaFormatPlugin(String fileType) {
 		super(fileType);
@@ -27,5 +30,9 @@ public abstract class JavaFormatPlugin extends FormatPlugin {
 	@Override
 	public Type type() {
 		return Type.JAVA;
+	}
+	
+	public void readUids(Book book) throws BookReadingException {
+		
 	}
 }

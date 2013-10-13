@@ -20,15 +20,15 @@
 package org.geometerplus.fbreader.formats.oeb;
 
 import org.geometerplus.zlibrary.core.filesystem.*;
-import org.geometerplus.zlibrary.core.encodings.AutoEncodingCollection;
 import org.geometerplus.zlibrary.core.image.ZLImage;
 
 import org.geometerplus.fbreader.book.Book;
 import org.geometerplus.fbreader.bookmodel.BookModel;
 import org.geometerplus.fbreader.bookmodel.BookReadingException;
+import org.geometerplus.fbreader.formats.FormatPluginReadAction;
 import org.geometerplus.fbreader.formats.JavaFormatPlugin;
 
-public class OEBPlugin extends JavaFormatPlugin {
+public class OEBPlugin extends JavaFormatPlugin implements FormatPluginReadAction{
 	public OEBPlugin() {
 		super("ePub");
 	}
@@ -62,11 +62,6 @@ public class OEBPlugin extends JavaFormatPlugin {
 	}
 
 	@Override
-	public void readUids(Book book) throws BookReadingException {
-		// this method does nothing, we expect it will be never called
-	}
-
-	@Override
 	public void readModel(BookModel model) throws BookReadingException {
 		model.Book.File.setCached(true);
 		new OEBBookReader(model).readBook(getOpfFile(model.Book.File));
@@ -88,15 +83,5 @@ public class OEBPlugin extends JavaFormatPlugin {
 		} catch (BookReadingException e) {
 			return null;
 		}
-	}
-
-	@Override
-	public AutoEncodingCollection supportedEncodings() {
-		return new AutoEncodingCollection();
-	}
-
-	@Override
-	public void detectLanguageAndEncoding(Book book) {
-		book.setEncoding("auto");
 	}
 }

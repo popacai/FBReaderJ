@@ -20,14 +20,13 @@
 package org.geometerplus.fbreader.formats;
 
 import org.geometerplus.zlibrary.core.filesystem.ZLFile;
+import org.geometerplus.zlibrary.core.encodings.AutoEncodingCollection;
 import org.geometerplus.zlibrary.core.encodings.EncodingCollection;
-import org.geometerplus.zlibrary.core.image.ZLImage;
 
 import org.geometerplus.fbreader.book.Book;
-import org.geometerplus.fbreader.bookmodel.BookModel;
 import org.geometerplus.fbreader.bookmodel.BookReadingException;
 
-public abstract class FormatPlugin {
+public abstract class FormatPlugin implements FormatPluginReadAction{
 	private final String myFileType;
 
 	protected FormatPlugin(String fileType) {
@@ -41,12 +40,14 @@ public abstract class FormatPlugin {
 	public ZLFile realBookFile(ZLFile file) throws BookReadingException {
 		return file;
 	}
-	public abstract void readMetaInfo(Book book) throws BookReadingException;
-	public abstract void readUids(Book book) throws BookReadingException;
-	public abstract void readModel(BookModel model) throws BookReadingException;
-	public abstract void detectLanguageAndEncoding(Book book) throws BookReadingException;
-	public abstract ZLImage readCover(ZLFile file);
-	public abstract String readAnnotation(ZLFile file);
+	
+	public void detectLanguageAndEncoding(Book book) throws BookReadingException {
+		book.setEncoding("auto");
+	}
+	
+	public EncodingCollection supportedEncodings() {
+		return new AutoEncodingCollection();
+	}
 
 	public enum Type {
 		ANY,
@@ -57,5 +58,5 @@ public abstract class FormatPlugin {
 	};
 	public abstract Type type();
 
-	public abstract EncodingCollection supportedEncodings();
+	
 }
