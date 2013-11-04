@@ -34,11 +34,7 @@ public class FB2Plugin extends JavaFormatPlugin{
 
 	@Override
 	public ZLFile realBookFile(ZLFile file) throws BookReadingException {
-		final ZLFile realFile = FB2Util.getRealFB2File(file);
-		if (realFile == null) {
-			throw new BookReadingException("incorrectFb2ZipFile", file);
-		}
-		return realFile;
+		return file;
 	}
 
 	@Override
